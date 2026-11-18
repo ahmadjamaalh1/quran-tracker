@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تۆمارکردنی لەبەرکردن</title>
+<style>
+body{font-family:sans-serif;margin:0;background:#f4f6f8;color:#222}
+header{background:#1e7a4c;color:#fff;padding:14px;text-align:center;font-size:18px}
+main{padding:12px;max-width:600px;margin:auto}
+input,select,textarea{width:100%;padding:12px;margin:6px 0;font-size:16px;box-sizing:border-box;border:1px solid #ccc;border-radius:8px}
+button{width:100%;padding:14px;margin:6px 0;font-size:17px;border:0;border-radius:8px;background:#1e7a4c;color:#fff}
+button.sec{background:#777}
+.card{background:#fff;border-radius:10px;padding:12px;margin:8px 0;box-shadow:0 1px 3px #0002}
+.hide{display:none}
+.status{font-size:14px;color:#555;text-align:center}
+label{font-size:14px;color:#444}
+</style>
+</head>
+<body>
+<header>تۆمارکردنی لەبەرکردن</header>
+<main>
+
+<div id="login" class="card">
+  <input id="email" type="email" placeholder="ئیمەیڵ">
+  <input id="pass" type="password" placeholder="وشەی نهێنی">
+  <button id="loginBtn">چوونەژوورەوە</button>
+</div>
+
+<div id="app" class="hide">
+  <button id="logoutBtn" class="sec">دەرچوون</button>
+
+  <div id="adminPanel" class="hide card">
+    <h3>بەڕێوەبەر</h3>
+    <h4>زیادکردنی مامۆستا</h4>
+    <input id="tName" placeholder="ناوی مامۆستا">
+    <input id="tEmail" type="email" placeholder="ئیمەیڵی مامۆستا">
+    <input id="tPass" placeholder="وشەی نهێنی سەرەتایی (٦ پیت یان زیاتر)">
+    <button id="addTeacherBtn">زیادکردنی مامۆستا</button>
+    <h4>زیادکردنی خوێندکار</h4>
+    <input id="sName" placeholder="ناوی خوێندکار">
+    <select id="sTeacher"></select>
+    <input id="sLevel" placeholder="ئاست / جوزء">
+    <button id="addStudentBtn">زیادکردنی خوێندکار</button>
+    <p id="adminMsg" class="status"></p>
+  </div>
+
+  <div class="card">
+    <h3>خوێندکارەکان</h3>
+    <div id="studentList"></div>
+  </div>
+
+  <div id="recordCard" class="hide card">
+    <h3 id="recName"></h3>
+    <label>ڕۆژ</label><input id="rDate" type="date">
+    <label>لەبەرکردن: لاپەڕە</label><input id="mPage" type="number" min="0">
+    <label>لەبەرکردن: هەڵە</label><input id="mErr" type="number" min="0">
+    <label>تەفسیر: لاپەڕە</label><input id="tfPage" type="number" min="0">
+    <label>تەفسیر: هەڵە</label><input id="tfErr" type="number" min="0">
+    <label>پێداچوونەوە: پرسیاری ١ (هەڵە)</label><input id="rv1" type="number" min="0">
+    <label>پێداچوونەوە: پرسیاری ٢ (هەڵە)</label><input id="rv2" type="number" min="0">
+    <label>تێبینی</label><textarea id="rNotes" rows="2"></textarea>
+    <button id="saveRecBtn">پاشەکەوتکردن</button>
+    <button id="closeRecBtn" class="sec">داخستن</button>
+    <p id="recMsg" class="status"></p>
+  </div>
+</div>
+
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeFirestore, persistentLocalCache, doc, getDoc, setDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDFvabL6xpSOLHoUMBw-y_Ew3L3yEpte1A",
+  authDomain: "quran-tracker-e0b92.firebaseapp.com",
+  projectId: "quran-tracker-e0b92",
+  storageBucket: "quran-tracker-e0b92.firebasestorage.app",
+  messagingSenderId: "62629936250",
+  appId: "1:62629936250:web:88fd78812fa3646b218fc3"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = initializeFirestore(app, { localCache: persistentLocalCache() });
+
+const $ = id => document.getElementById(id);
+const num = id => Number($(id).value || 0);
+let me = null, isAdmin = false, currentStudent = null, secApp = null;
+
+function adminMsg(t) { $("adminMsg").textContent = t; }
+
+$("loginBtn").onclick = async () => {
+  try {
+    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("pass").value);
+  } catch (e) {
+    alert("ئیمەیڵ یان وشەی نهێنی هەڵەیە");
+  }
+};
+
+$("logoutBtn").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    $("login").classList.remove("hide");
+    $("app").classList.add("hide");
+    return;
+  }
+  const snap = await getDoc(doc(db, "teachers", user.uid));
+  if (!snap.exists()) {
+    alert("ئەم هەژمارە زیادکراو نییە");
+    signOut(auth);
+    return;
+  }
+  me = user.uid;
+  isAdmin = snap.data().role === "admin";
+  $("login").classList.add("hide");
+  $("app").classList.remove("hide");
+  if (isAdmin) {
+    $("adminPanel").classList.remove("hide");
+    await loadTeachersSelect();
+  }
+  await loadStudents();
+});
+
+async function loadTeachersSelect() {
+  const snap = await getDocs(collection(db, "teachers"));
+  const sel = $("sTeacher");
+  sel.innerHTML = "";
+  snap.forEach(d => {
+    const o = document.createElement("option");
+    o.value = d.id;
+    o.textContent = d.data().name;
+    sel.appendChild(o);
+  });
+}
+
+async function loadStudents() {
+  const q = isAdmin
+    ? collection(db, "students")
+    : query(collection(db, "students"), where("teacherId", "==", me));
+  const snap = await getDocs(q);
+  const list = $("studentList");
+  list.innerHTML = "";
+  snap.forEach(d => {
+    const s = d.data();
+    const div = document.createElement("div");
+    div.className = "card";
+    const b = document.createElement("b");
+    b.textContent = s.name;
+    const small = document.createElement("small");
+    small.textContent = (s.level || "") + (isAdmin ? " — مامۆستا: " + (s.teacherName || "") : "");
+    div.append(b, document.createElement("br"), small);
+    div.onclick = () => openRecord(d.id, s.name);
+    list.appendChild(div);
+  });
+  if (snap.empty) list.textContent = "هیچ خوێندکارێک نییە";
+}
+
+function openRecord(sid, name) {
+  currentStudent = { id: sid, name };
+  $("recName").textContent = name;
+  $("rDate").value = new Date().toISOString().slice(0, 10);
+  ["mPage", "mErr", "tfPage", "tfErr", "rv1", "rv2", "rNotes"].forEach(i => $(i).value = "");
+  $("recMsg").textContent = "";
+  $("recordCard").classList.remove("hide");
+  $("recordCard").scrollIntoView();
+}
+
+$("closeRecBtn").onclick = () => $("recordCard").classList.add("hide");
+
+$("saveRecBtn").onclick = () => {
+  addDoc(collection(db, "records"), {
+    studentId: currentStudent.id,
+    studentName: currentStudent.name,
+    teacherId: me,
+    date: $("rDate").value,
+    memPage: num("mPage"), memErrors: num("mErr"),
+    tafsirPage: num("tfPage"), tafsirErrors: num("tfErr"),
+    review1Errors: num("rv1"), review2Errors: num("rv2"),
+    notes: $("rNotes").value.trim(),
+    createdAt: serverTimestamp()
+  }).catch(e => alert("هەڵە: " + e.message));
+  $("recMsg").textContent = "پاشەکەوتکرا";
+  setTimeout(() => $("recordCard").classList.add("hide"), 800);
+};
+
+$("addTeacherBtn").onclick = async () => {
+  const name = $("tName").value.trim();
+  const email = $("tEmail").value.trim();
+  const pass = $("tPass").value;
+  if (!name || !email || pass.length < 6) return adminMsg("ناو، ئیمەیڵ و وشەی نهێنی (٦ پیت) پێویستە");
+  try {
+    secApp = secApp || initializeApp(firebaseConfig, "secondary");
+    const secAuth = getAuth(secApp);
+    const cred = await createUserWithEmailAndPassword(secAuth, email, pass);
+    await setDoc(doc(db, "teachers", cred.user.uid), { name, email, role: "teacher" });
+    await signOut(secAuth);
+    adminMsg("مامۆستا زیادکرا");
+    $("tName").value = $("tEmail").value = $("tPass").value = "";
+    await loadTeachersSelect();
+  } catch (e) {
+    adminMsg("هەڵە: " + e.message);
+  }
+};
+
+$("addStudentBtn").onclick = async () => {
+  const name = $("sName").value.trim();
+  const sel = $("sTeacher");
+  if (!name || !sel.value) return adminMsg("ناوی خوێندکار و مامۆستا پێویستە");
+  await addDoc(collection(db, "students"), {
+    name,
+    level: $("sLevel").value.trim(),
+    teacherId: sel.value,
+    teacherName: sel.options[sel.selectedIndex].text,
+    createdAt: serverTimestamp()
+  });
+  adminMsg("خوێندکار زیادکرا");
+  $("sName").value = $("sLevel").value = "";
+  await loadStudents();
+};
+</script>
+</body>
+</html>
