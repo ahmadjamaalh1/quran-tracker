@@ -39,6 +39,27 @@ main{max-width:560px;margin:0 auto;padding:8px 16px 48px}
 .welcome button{max-width:320px;margin:0 auto;display:block}
 .login{max-width:380px;margin:36px auto 0}
 
+/* جوڵەی سەرەتا: هەموو بەشەکان بە fade دێنە خوارەوە */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:none; }
+}
+.welcome > *{
+  opacity:0;
+  animation:fadeUp .6s ease-out forwards;
+}
+.welcome > *:nth-child(1){ animation-delay:.1s }
+.welcome > *:nth-child(2){ animation-delay:.3s }
+.welcome > *:nth-child(3){ animation-delay:.5s }
+.welcome > *:nth-child(4){ animation-delay:.7s }
+.welcome > *:nth-child(5){ animation-delay:.85s }
+.welcome > *:nth-child(6){ animation-delay:1s }
+.welcome > *:nth-child(7){ animation-delay:1.15s }
+.welcome > *:nth-child(8){ animation-delay:1.3s }
+@media (prefers-reduced-motion:reduce){
+  .welcome > *{ opacity:1; animation:none; }
+}
+
 /* سەرتیتر و تابەکان */
 .appHead{
   display:flex;justify-content:space-between;align-items:center;
@@ -116,7 +137,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .small{font-size:14px;color:var(--muted)}
 
 /* شیتی تۆمار */
-.backdrop,.sheetBackdrop{position:fixed;inset:0;background:rgba(23,52,58,.25)}
+.sheetBackdrop{position:fixed;inset:0;background:rgba(23,52,58,.25)}
 .sheet{
   position:fixed;left:0;right:0;bottom:0;max-height:90vh;overflow-y:auto;
   background:var(--surface);border-top:1px solid var(--line);
@@ -364,9 +385,9 @@ function age(dob) {
 
 /* ---------- دۆخی ئەپ ---------- */
 let me = null, myName = "", isAdmin = false, secApp = null;
-let teachers = [];        // { id, name }
-let studentsCache = [];   // خوێندکارانی ئەم بەکارهێنەرە
-let recCache = [];        // تۆمارەکانی ئەم بەکارهێنەرە
+let teachers = [];
+let studentsCache = [];
+let recCache = [];
 let listWeek = weekStartOf(new Date());
 let curStudent = null, curWeek = null, curAtt = null;
 let editingId = null;
@@ -793,7 +814,6 @@ $("addTeacherBtn").onclick = async () => {
   }
 };
 
-/* ---------- ڕاپۆرتی سەرەوە: دەست پێکردنی ئاسان ---------- */
 newStudent();
 </script>
 </body>
