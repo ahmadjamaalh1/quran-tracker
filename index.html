@@ -90,6 +90,8 @@ const $ = id => document.getElementById(id);
 const num = id => Number($(id).value || 0);
 let me = null, isAdmin = false, currentStudent = null, secApp = null;
 
+const todayStr = () => new Date().toLocaleDateString("en-CA");
+
 function adminMsg(t) { $("adminMsg").textContent = t; }
 
 $("loginBtn").onclick = async () => {
@@ -159,30 +161,71 @@ async function loadStudents() {
   if (snap.empty) list.textContent = "هیچ خوێندکارێک نییە";
 }
 
-function openRecord(sid, name) {
+function clearFields() {
+  ["mPage", "mErr", "tfPage", "tfErr", "rv1", "rv2", "rNotes"].forEach(i => $(i).value = "");
+}
+
+function fillFields(d) {
+  $("mPage").value = d.memPage ?? "";
+  $("mErr").value = d.memErrors ?? "";
+  $("tfPage").value = d.tafsirPage ?? "";
+  $("tfErr").value = d.tafsirErrors ?? "";
+  $("rv1").value = d.review1Errors ?? "";
+  $("rv2").value = d.review2Errors ?? "";
+  $("rNotes").value = d.notes ?? "";
+}
+
+// تۆماری ئەو ڕۆژە بخوێنەرەوە، ئەگەر هەبوو پڕی بکەرەوە
+async function loadRecordForDate() {
+  clearFields();
+  $("recMsg").textContent = "";
+  if (!currentStudent || !$("rDate").value) return;
+  const q = query(
+    collection(db, "records"),
+    where("studentId", "==", currentStudent.id),
+    where("date", "==", $("rDate").value),
+    where("teacherId", "==", me)
+  );
+  try {
+    const snap = await getDocs(q);
+    if (!snap.empty) {
+      fillFields(snap.docs[0].data());
+      $("recMsg").textContent = "تۆماری ئەم ڕۆژە هەیە، دەتوانیت نوێی بکەیتەوە";
+    }
+  } catch (e) {
+    $("recMsg").textContent = "هەڵە لە خوێندنەوە: " + e.message;
+  }
+}
+
+async function openRecord(sid, name) {
   currentStudent = { id: sid, name };
   $("recName").textContent = name;
-  $("rDate").value = new Date().toISOString().slice(0, 10);
-  ["mPage", "mErr", "tfPage", "tfErr", "rv1", "rv2", "rNotes"].forEach(i => $(i).value = "");
-  $("recMsg").textContent = "";
+  $("rDate").value = todayStr();
   $("recordCard").classList.remove("hide");
   $("recordCard").scrollIntoView();
+  await loadRecordForDate();
 }
+
+$("rDate").onchange = loadRecordForDate;
 
 $("closeRecBtn").onclick = () => $("recordCard").classList.add("hide");
 
 $("saveRecBtn").onclick = () => {
-  addDoc(collection(db, "records"), {
+  const date = $("rDate").value;
+  if (!currentStudent || !date) return;
+  // ناوی دۆکیومێنت = خوێندکار_ڕۆژ، بۆ ئەوەی هەمان ڕۆژ دوو جار تۆمار نەبێت
+  const id = currentStudent.id + "_" + date;
+  setDoc(doc(db, "records", id), {
     studentId: currentStudent.id,
     studentName: currentStudent.name,
     teacherId: me,
-    date: $("rDate").value,
+    date,
     memPage: num("mPage"), memErrors: num("mErr"),
     tafsirPage: num("tfPage"), tafsirErrors: num("tfErr"),
     review1Errors: num("rv1"), review2Errors: num("rv2"),
     notes: $("rNotes").value.trim(),
-    createdAt: serverTimestamp()
-  }).catch(e => alert("هەڵە: " + e.message));
+    updatedAt: serverTimestamp()
+  }, { merge: true }).catch(e => alert("هەڵە: " + e.message));
   $("recMsg").textContent = "پاشەکەوتکرا";
   setTimeout(() => $("recordCard").classList.add("hide"), 800);
 };
