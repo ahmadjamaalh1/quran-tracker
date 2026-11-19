@@ -2,76 +2,318 @@
 <html lang="ku" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>تۆمارکردنی لەبەرکردن</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body{font-family:sans-serif;margin:0;background:#f4f6f8;color:#222}
-header{background:#1e7a4c;color:#fff;padding:14px;text-align:center;font-size:18px}
-main{padding:12px;max-width:600px;margin:auto}
-input,select,textarea{width:100%;padding:12px;margin:6px 0;font-size:16px;box-sizing:border-box;border:1px solid #ccc;border-radius:8px}
-button{width:100%;padding:14px;margin:6px 0;font-size:17px;border:0;border-radius:8px;background:#1e7a4c;color:#fff}
-button.sec{background:#777}
-.card{background:#fff;border-radius:10px;padding:12px;margin:8px 0;box-shadow:0 1px 3px #0002}
-.hide{display:none}
-.status{font-size:14px;color:#555;text-align:center}
-label{font-size:14px;color:#444}
+:root{
+  --ink:#17343A;
+  --paper:#EEF1EC;
+  --surface:#FBFCFA;
+  --muted:#66797C;
+  --line:#D3DBD6;
+  --accent:#A9782A;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Vazirmatn",Tahoma,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  font-size:16px;
+  line-height:1.8;
+}
+.hide{display:none!important}
+main{max-width:560px;margin:0 auto;padding:8px 16px 48px}
+
+/* سەرەتا */
+.welcome{text-align:center;padding:36px 8px 12px}
+.logo{display:block;width:100%;max-width:260px;height:auto;margin:0 auto 18px}
+.inst{font-size:22px;font-weight:700;margin:4px 0}
+.subInst{font-size:16px;margin:0}
+.rule{width:56px;height:2px;background:var(--accent);margin:20px auto}
+.dept{font-size:18px;font-weight:700;margin:0 0 4px}
+.sheetTitle{font-size:15px;color:var(--muted);margin:0 0 32px}
+.welcome button{max-width:320px;margin:0 auto;display:block}
+.login{max-width:380px;margin:36px auto 0}
+
+/* سەرتیتر و تابەکان */
+.appHead{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 16px;border-bottom:1px solid var(--line);background:var(--surface);
+}
+.appHead h1{margin:0;font-size:17px;font-weight:700}
+.tabs{display:flex;gap:4px;max-width:560px;margin:0 auto;padding:10px 16px 0;overflow-x:auto}
+.tab{
+  flex:1;width:auto;background:transparent;color:var(--muted);
+  border:0;border-bottom:2px solid transparent;border-radius:0;
+  padding:10px 6px;margin:0;white-space:nowrap;
+}
+.tab.active{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* پانێل و فۆرم */
+.panel{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:4px;padding:18px;margin:16px 0;
+}
+.panel h2{margin:0 0 10px;font-size:17px;font-weight:700}
+.panel h3{margin:18px 0 6px;font-size:15px;font-weight:700;color:var(--muted)}
+input,select,textarea{
+  width:100%;font:inherit;color:var(--ink);background:transparent;
+  border:0;border-bottom:1.5px solid var(--line);border-radius:0;
+  padding:10px 2px;margin:4px 0 12px;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-bottom-color:var(--ink)}
+label{display:block;font-size:14px;color:var(--muted);margin-top:4px}
+button{
+  font:inherit;font-weight:700;width:100%;padding:13px;border-radius:4px;
+  border:1px solid var(--ink);background:var(--ink);color:#fff;margin:6px 0;cursor:pointer;
+}
+button.ghost{background:transparent;color:var(--ink)}
+button.small{width:auto;padding:7px 12px;margin:0;font-size:14px}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* لیست */
+.sectionHead{display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px}
+.sectionHead h2{margin:0;font-size:17px;font-weight:700}
+.student{
+  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:14px 2px;border-bottom:1px solid var(--line);cursor:pointer;
+}
+.student:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.student b{font-size:16px;font-weight:700}
+.student small{color:var(--muted);font-size:13px;white-space:nowrap}
+.empty{color:var(--muted);padding:14px 2px}
+.status{font-size:14px;color:var(--muted);text-align:center;min-height:1.4em}
+.alert{
+  background:#F6EBDD;border:1px solid var(--accent);color:#6B4A14;
+  border-radius:4px;padding:10px 12px;margin:12px 0;font-size:15px;
+}
+
+/* هەفتە */
+.weekNav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
+.weekNav button{width:auto;padding:8px 12px;margin:0}
+.weekNav span{font-weight:700;font-size:15px}
+
+/* ئامادەبوون */
+.att{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 6px}
+.attBtn{
+  background:var(--surface);color:var(--ink);border:1.5px solid var(--line);
+  font-size:22px;font-weight:400;padding:12px 0;margin:0;
+}
+.attBtn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* فلتەر */
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;margin:12px 0}
+.filters button{grid-column:1/-1}
+
+/* ڕاپۆرت */
+.rCard{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:12px;margin:10px 0}
+.rCard ul{padding-inline-start:18px;margin:8px 0 0;font-size:14px;color:var(--muted)}
+.rHead{padding:4px 2px 8px}
+.small{font-size:14px;color:var(--muted)}
+
+/* شیتی تۆمار */
+.backdrop,.sheetBackdrop{position:fixed;inset:0;background:rgba(23,52,58,.25)}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;max-height:90vh;overflow-y:auto;
+  background:var(--surface);border-top:1px solid var(--line);
+  border-radius:12px 12px 0 0;padding:18px 16px 28px;
+  box-shadow:0 -8px 24px rgba(23,52,58,.12);
+  animation:rise .28s ease-out;
+}
+.sheet h2{margin:0 0 4px;font-size:18px;font-weight:700}
+@keyframes rise{from{transform:translateY(100%)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.sectionTitle{
+  font-size:14px;font-weight:700;margin:14px 0 2px;padding-bottom:4px;
+  border-bottom:2px solid var(--accent);display:inline-block;
+}
 </style>
 </head>
 <body>
-<header>تۆمارکردنی لەبەرکردن</header>
-<main>
 
-<div id="login" class="card">
-  <input id="email" type="email" placeholder="ئیمەیڵ">
-  <input id="pass" type="password" placeholder="وشەی نهێنی">
-  <button id="loginBtn">چوونەژوورەوە</button>
-</div>
+<!-- شاشەی سەرەتا -->
+<section id="welcome">
+  <main class="welcome">
+    <img src="logo.png" alt="لۆگۆی دەزگای نوری حیکمە" class="logo">
+    <p class="inst">دەزگای نوری حیکمە</p>
+    <p class="subInst">دەزگای نوری حیکمە بۆ پەروەردە و ڕۆشنبیری</p>
+    <div class="rule"></div>
+    <p class="dept">بەڕێوەبەرایەتیی لەبەرکردن</p>
+    <p class="sheetTitle">خشتەی هەفتانە / ٢٠٢٦-٢٠٢٧</p>
+    <button id="showLoginBtn">چوونە ژوورەوە</button>
+  </main>
+</section>
 
+<!-- فۆرمی چوونەژوورەوە -->
+<section id="login" class="hide">
+  <main class="login">
+    <div class="panel">
+      <h2>چوونەژوورەوە</h2>
+      <input id="email" type="email" placeholder="ئیمەیڵ">
+      <input id="pass" type="password" placeholder="وشەی نهێنی">
+      <button id="loginBtn">چوونە ژوورەوە</button>
+      <button id="backBtn" class="ghost">گەڕانەوە</button>
+    </div>
+  </main>
+</section>
+
+<!-- ئەپ -->
 <div id="app" class="hide">
-  <button id="logoutBtn" class="sec">دەرچوون</button>
+  <header class="appHead">
+    <h1>تۆمارکردنی لەبەرکردن</h1>
+    <button id="logoutBtn" class="ghost small">دەرچوون</button>
+  </header>
 
-  <div id="adminPanel" class="hide card">
-    <h3>بەڕێوەبەر</h3>
-    <h4>زیادکردنی مامۆستا</h4>
-    <input id="tName" placeholder="ناوی مامۆستا">
-    <input id="tEmail" type="email" placeholder="ئیمەیڵی مامۆستا">
-    <input id="tPass" placeholder="وشەی نهێنی سەرەتایی (٦ پیت یان زیاتر)">
-    <button id="addTeacherBtn">زیادکردنی مامۆستا</button>
-    <h4>زیادکردنی خوێندکار</h4>
-    <input id="sName" placeholder="ناوی خوێندکار">
-    <select id="sTeacher"></select>
-    <input id="sLevel" placeholder="ئاست / جوزء">
-    <button id="addStudentBtn">زیادکردنی خوێندکار</button>
-    <p id="adminMsg" class="status"></p>
-  </div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="rec">تۆمار</button>
+    <button class="tab" data-tab="rep">ڕاپۆرت</button>
+    <button class="tab" data-tab="stu">خوێندکاران</button>
+    <button class="tab adminOnly hide" data-tab="tch">مامۆستاکان</button>
+  </nav>
 
-  <div class="card">
-    <h3>خوێندکارەکان</h3>
-    <div id="studentList"></div>
-  </div>
+  <main>
+    <div id="alerts"></div>
 
-  <div id="recordCard" class="hide card">
-    <h3 id="recName"></h3>
-    <label>ڕۆژ</label><input id="rDate" type="date">
-    <label>لەبەرکردن: لاپەڕە</label><input id="mPage" type="number" min="0">
-    <label>لەبەرکردن: هەڵە</label><input id="mErr" type="number" min="0">
-    <label>تەفسیر: لاپەڕە</label><input id="tfPage" type="number" min="0">
-    <label>تەفسیر: هەڵە</label><input id="tfErr" type="number" min="0">
-    <label>پێداچوونەوە: پرسیاری ١ (هەڵە)</label><input id="rv1" type="number" min="0">
-    <label>پێداچوونەوە: پرسیاری ٢ (هەڵە)</label><input id="rv2" type="number" min="0">
-    <label>تێبینی</label><textarea id="rNotes" rows="2"></textarea>
-    <button id="saveRecBtn">پاشەکەوتکردن</button>
-    <button id="closeRecBtn" class="sec">داخستن</button>
-    <p id="recMsg" class="status"></p>
-  </div>
+    <!-- تابی تۆمار -->
+    <section id="tab-rec" class="tabPane">
+      <div id="recTeacherWrap" class="hide">
+        <label for="recTeacher">مامۆستا</label>
+        <select id="recTeacher"></select>
+      </div>
+      <div class="weekNav">
+        <button id="lwPrev" class="ghost">پێشوو</button>
+        <span id="lwLabel"></span>
+        <button id="lwNext" class="ghost">دواتر</button>
+      </div>
+      <div id="recList"></div>
+    </section>
+
+    <!-- تابی ڕاپۆرت -->
+    <section id="tab-rep" class="tabPane hide">
+      <div id="repTeacherWrap" class="hide">
+        <label for="repTeacher">مامۆستا</label>
+        <select id="repTeacher"></select>
+      </div>
+      <label for="repMonth">مانگ</label>
+      <input id="repMonth" type="month">
+      <button id="repBtn">پیشاندانی ڕاپۆرت</button>
+      <div id="repOut"></div>
+    </section>
+
+    <!-- تابی خوێندکاران -->
+    <section id="tab-stu" class="tabPane hide">
+      <div class="filters">
+        <select id="fTeacher" class="hide"></select>
+        <input id="fMinAge" type="number" min="0" placeholder="کەمترین تەمەن">
+        <input id="fMaxAge" type="number" min="0" placeholder="زۆرترین تەمەن">
+        <select id="fSort">
+          <option value="name">ڕیزکردن بە ناو</option>
+          <option value="age">ڕیزکردن بە تەمەن</option>
+          <option value="juz">ڕیزکردن بە بڕی لەبەرکردن</option>
+        </select>
+        <button id="fApply">پیشاندان</button>
+      </div>
+      <div id="stuList"></div>
+
+      <section class="panel">
+        <h2 id="sfTitle">زیادکردنی خوێندکار</h2>
+        <div id="sfTeacherWrap" class="hide">
+          <label for="sfTeacher">مامۆستا</label>
+          <select id="sfTeacher"></select>
+        </div>
+        <input id="sfName" placeholder="ناوی چوار">
+        <input id="sfPhone" placeholder="ژمارەی مۆبایلی خوێندکار">
+        <label for="sfDob">بەرواری لەدایکبوون</label>
+        <input id="sfDob" type="date">
+        <input id="sfJob" placeholder="پیشە">
+        <input id="sfGuard" placeholder="سەرپەرشتیاری خێزان">
+        <input id="sfGuardPhone" placeholder="ژمارەی مۆبایلی سەرپەرشتیار">
+        <label for="sfJuz">ڕێژەی جوزئی لەبەرکراو (ژمارە)</label>
+        <input id="sfJuz" type="number" min="0">
+        <label for="sfStart">شوێنی دەستپێکردن</label>
+        <select id="sfStart">
+          <option value="البقرة بۆ الناس">البقرة بۆ الناس</option>
+          <option value="الناس بۆ البقرة">الناس بۆ البقرة</option>
+        </select>
+        <input id="sfLessonDay" placeholder="ڕۆژی وانەخوێندن">
+        <input id="sfQiraa" placeholder="ناوی مامۆستای قیڕائە">
+        <input id="sfRiwayat" placeholder="ڕیوایەتەکان کە مۆڵەتی تێدایە">
+        <input id="sfPlace" placeholder="شوێنی خوێندنی قورئان">
+        <input id="sfFinance" placeholder="باری دارایی خێزان">
+        <button id="sfSave">پاشەکەوتکردن</button>
+        <button id="sfNew" class="ghost">خوێندکاری نوێ</button>
+        <button id="sfDelete" class="ghost hide">سڕینەوە</button>
+        <p id="sfMsg" class="status"></p>
+      </section>
+    </section>
+
+    <!-- تابی مامۆستاکان (تەنها بەڕێوەبەر) -->
+    <section id="tab-tch" class="tabPane hide">
+      <section class="panel">
+        <h2>زیادکردنی مامۆستا</h2>
+        <input id="tName" placeholder="ناوی مامۆستا">
+        <input id="tEmail" type="email" placeholder="ئیمەیڵی مامۆستا">
+        <input id="tPass" placeholder="وشەی نهێنی سەرەتایی (٦ پیت یان زیاتر)">
+        <button id="addTeacherBtn">زیادکردنی مامۆستا</button>
+        <p id="adminMsg" class="status"></p>
+      </section>
+    </section>
+  </main>
 </div>
 
-</main>
+<!-- شیتی تۆماری هەفتانە -->
+<div id="recordBackdrop" class="sheetBackdrop hide"></div>
+<section id="recordCard" class="sheet hide">
+  <h2 id="recName"></h2>
+  <div class="weekNav">
+    <button id="swPrev" class="ghost">پێشوو</button>
+    <span id="recSheetWeek"></span>
+    <button id="swNext" class="ghost">دواتر</button>
+  </div>
+
+  <label>ئامادەبوون</label>
+  <div class="att">
+    <button class="attBtn" data-val="present" aria-pressed="false">✔️</button>
+    <button class="attBtn" data-val="absent" aria-pressed="false">✖️</button>
+    <button class="attBtn" data-val="excused" aria-pressed="false">م</button>
+  </div>
+
+  <div class="sectionTitle">لەبەرکردن</div>
+  <div class="grid">
+    <div><label for="mPage">لاپەڕە</label><input id="mPage" type="number" min="0" inputmode="numeric"></div>
+    <div><label for="mErr">هەڵە</label><input id="mErr" type="number" min="0" inputmode="numeric"></div>
+  </div>
+
+  <div class="sectionTitle">تەفسیر</div>
+  <div class="grid">
+    <div><label for="tfPage">لاپەڕە</label><input id="tfPage" type="number" min="0" inputmode="numeric"></div>
+    <div><label for="tfErr">هەڵە</label><input id="tfErr" type="number" min="0" inputmode="numeric"></div>
+  </div>
+
+  <div class="sectionTitle">پێداچوونەوە</div>
+  <div class="grid">
+    <div><label for="rv1">پرسیاری ١ (هەڵە)</label><input id="rv1" type="number" min="0" inputmode="numeric"></div>
+    <div><label for="rv2">پرسیاری ٢ (هەڵە)</label><input id="rv2" type="number" min="0" inputmode="numeric"></div>
+  </div>
+
+  <label for="rNotes">تێبینی</label>
+  <textarea id="rNotes" rows="2"></textarea>
+
+  <button id="saveRecBtn">پاشەکەوتکردن</button>
+  <button id="closeRecBtn" class="ghost">داخستن</button>
+  <p id="recMsg" class="status"></p>
+</section>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { initializeFirestore, persistentLocalCache, doc, getDoc, setDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore, persistentLocalCache, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDFvabL6xpSOLHoUMBw-y_Ew3L3yEpte1A",
@@ -86,28 +328,74 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = initializeFirestore(app, { localCache: persistentLocalCache() });
 
+/* ---------- یاریدەدەرەکان ---------- */
 const $ = id => document.getElementById(id);
-const num = id => Number($(id).value || 0);
-let me = null, isAdmin = false, currentStudent = null, secApp = null;
+const v = id => $(id).value.trim();
+const n = id => Number($(id).value || 0);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const byName = (a, b) => a.name.localeCompare(b.name, "ku");
 
-const todayStr = () => new Date().toLocaleDateString("en-CA");
+const SYM = { present: "✔️", absent: "✖️", excused: "م" };
+const ST  = { present: "ئامادە", absent: "غیاب", excused: "م" };
 
-function adminMsg(t) { $("adminMsg").textContent = t; }
+function toDate(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
+function fmt(d) {
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+// هەفتە لە شەممەوە دەست پێدەکات
+function weekStartOf(d) {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() - ((x.getDay() + 1) % 7));
+  return fmt(x);
+}
+function shiftWeek(s, k) { const d = toDate(s); d.setDate(d.getDate() + 7 * k); return fmt(d); }
+function weekLabel(s) {
+  const a = toDate(s), b = new Date(a);
+  b.setDate(a.getDate() + 6);
+  return `هەفتەی ${a.getDate()} - ${b.getDate()} / ${b.getMonth() + 1}`;
+}
+function age(dob) {
+  if (!dob) return null;
+  const b = toDate(dob), t = new Date();
+  let a = t.getFullYear() - b.getFullYear();
+  if (t < new Date(t.getFullYear(), b.getMonth(), b.getDate())) a--;
+  return a;
+}
 
+/* ---------- دۆخی ئەپ ---------- */
+let me = null, myName = "", isAdmin = false, secApp = null;
+let teachers = [];        // { id, name }
+let studentsCache = [];   // خوێندکارانی ئەم بەکارهێنەرە
+let recCache = [];        // تۆمارەکانی ئەم بەکارهێنەرە
+let listWeek = weekStartOf(new Date());
+let curStudent = null, curWeek = null, curAtt = null;
+let editingId = null;
+
+/* ---------- چوونەژوورەوە ---------- */
+$("showLoginBtn").onclick = () => {
+  $("welcome").classList.add("hide");
+  $("login").classList.remove("hide");
+  $("email").focus();
+};
+$("backBtn").onclick = () => {
+  $("login").classList.add("hide");
+  $("welcome").classList.remove("hide");
+};
 $("loginBtn").onclick = async () => {
   try {
-    await signInWithEmailAndPassword(auth, $("email").value.trim(), $("pass").value);
+    await signInWithEmailAndPassword(auth, v("email"), $("pass").value);
   } catch (e) {
     alert("ئیمەیڵ یان وشەی نهێنی هەڵەیە");
   }
 };
-
 $("logoutBtn").onclick = () => signOut(auth);
 
 onAuthStateChanged(auth, async user => {
   if (!user) {
-    $("login").classList.remove("hide");
     $("app").classList.add("hide");
+    $("login").classList.add("hide");
+    $("welcome").classList.remove("hide");
+    closeSheet();
     return;
   }
   const snap = await getDoc(doc(db, "teachers", user.uid));
@@ -117,153 +405,396 @@ onAuthStateChanged(auth, async user => {
     return;
   }
   me = user.uid;
+  myName = snap.data().name || "";
   isAdmin = snap.data().role === "admin";
+  document.querySelectorAll(".adminOnly").forEach(el => el.classList.toggle("hide", !isAdmin));
+
+  $("welcome").classList.add("hide");
   $("login").classList.add("hide");
   $("app").classList.remove("hide");
-  if (isAdmin) {
-    $("adminPanel").classList.remove("hide");
-    await loadTeachersSelect();
-  }
-  await loadStudents();
+
+  await loadTeachers();
+  await loadAll();
+  showTab("rec");
 });
 
-async function loadTeachersSelect() {
-  const snap = await getDocs(collection(db, "teachers"));
-  const sel = $("sTeacher");
-  sel.innerHTML = "";
-  snap.forEach(d => {
-    const o = document.createElement("option");
-    o.value = d.id;
-    o.textContent = d.data().name;
-    sel.appendChild(o);
-  });
+/* ---------- بارکردنی داتا ---------- */
+async function loadTeachers() {
+  if (isAdmin) {
+    const snap = await getDocs(collection(db, "teachers"));
+    teachers = snap.docs.map(d => ({ id: d.id, name: d.data().name || "" }));
+  } else {
+    teachers = [{ id: me, name: myName }];
+  }
+  const opts = teachers.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
+  $("recTeacher").innerHTML = opts;
+  $("repTeacher").innerHTML = opts;
+  $("sfTeacher").innerHTML = opts;
+  $("fTeacher").innerHTML = '<option value="">هەموو مامۆستاکان</option>' + opts;
+
+  $("recTeacherWrap").classList.toggle("hide", !isAdmin);
+  $("repTeacherWrap").classList.toggle("hide", !isAdmin);
+  $("sfTeacherWrap").classList.toggle("hide", !isAdmin);
+  $("fTeacher").classList.toggle("hide", !isAdmin);
 }
 
 async function loadStudents() {
-  const q = isAdmin
-    ? collection(db, "students")
-    : query(collection(db, "students"), where("teacherId", "==", me));
-  const snap = await getDocs(q);
-  const list = $("studentList");
-  list.innerHTML = "";
-  snap.forEach(d => {
-    const s = d.data();
-    const div = document.createElement("div");
-    div.className = "card";
+  const c = isAdmin ? [] : [where("teacherId", "==", me)];
+  const snap = await getDocs(query(collection(db, "students"), ...c));
+  studentsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+async function loadRecords() {
+  const c = isAdmin ? [] : [where("teacherId", "==", me)];
+  const snap = await getDocs(query(collection(db, "records"), ...c));
+  recCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+async function loadAll() {
+  try {
+    await loadStudents();
+    await loadRecords();
+  } catch (e) {
+    alert("هەڵە لە بارکردنی داتا: " + e.message);
+  }
+  renderAlerts();
+  renderRecList();
+  renderStudents();
+}
+
+/* ---------- ئاگادارکردنەوە: دوو ✖️ی یەکلاکەرەوە ---------- */
+function warnings() {
+  const by = {};
+  recCache.forEach(r => { (by[r.studentId] ??= []).push(r); });
+  const out = [];
+  for (const sid in by) {
+    const last = by[sid].sort((a, b) => b.weekStart.localeCompare(a.weekStart)).slice(0, 2);
+    if (last.length === 2 && last[0].att === "absent" && last[1].att === "absent") {
+      const gap = toDate(last[0].weekStart) - toDate(last[1].weekStart);
+      if (gap === 7 * 24 * 3600 * 1000) {
+        const s = studentsCache.find(x => x.id === sid);
+        out.push({ name: s?.name || last[0].studentName, teacher: s?.teacherName || "" });
+      }
+    }
+  }
+  return out;
+}
+
+function renderAlerts() {
+  $("alerts").innerHTML = warnings().map(x =>
+    `<div class="alert">ئاگادارکردنەوە: ${esc(x.name)}${isAdmin && x.teacher ? " (" + esc(x.teacher) + ")" : ""} — دوو وانە بەسەریەکەوە نەهاتووە</div>`
+  ).join("");
+}
+
+/* ---------- تابەکان ---------- */
+function showTab(name) {
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+  document.querySelectorAll(".tabPane").forEach(p => p.classList.toggle("hide", p.id !== "tab-" + name));
+  if (name === "rec") renderRecList();
+  if (name === "stu") renderStudents();
+}
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+
+/* ---------- تابی تۆمار: لیستی خوێندکاران بۆ هەفتەی دیاریکراو ---------- */
+function renderRecList() {
+  $("lwLabel").textContent = weekLabel(listWeek);
+  const tid = isAdmin ? $("recTeacher").value : me;
+  const box = $("recList");
+  box.innerHTML = "";
+  const mine = studentsCache.filter(s => s.teacherId === tid).sort(byName);
+  if (!mine.length) {
+    box.innerHTML = '<p class="empty">هیچ خوێندکارێک نییە</p>';
+    return;
+  }
+  mine.forEach(s => {
+    const r = recCache.find(x => x.studentId === s.id && x.weekStart === listWeek);
+    const row = document.createElement("div");
+    row.className = "student";
+    row.tabIndex = 0;
     const b = document.createElement("b");
     b.textContent = s.name;
     const small = document.createElement("small");
-    small.textContent = (s.level || "") + (isAdmin ? " — مامۆستا: " + (s.teacherName || "") : "");
-    div.append(b, document.createElement("br"), small);
-    div.onclick = () => openRecord(d.id, s.name);
-    list.appendChild(div);
+    small.textContent = r && r.att ? SYM[r.att] + " " + ST[r.att] : "تۆمار نەکراوە";
+    row.append(b, small);
+    row.onclick = () => openRecord(s, listWeek);
+    row.onkeydown = e => { if (e.key === "Enter") openRecord(s, listWeek); };
+    box.appendChild(row);
   });
-  if (snap.empty) list.textContent = "هیچ خوێندکارێک نییە";
 }
+$("lwPrev").onclick = () => { listWeek = shiftWeek(listWeek, -1); renderRecList(); };
+$("lwNext").onclick = () => { listWeek = shiftWeek(listWeek, 1); renderRecList(); };
+$("recTeacher").onchange = renderRecList;
 
-function clearFields() {
-  ["mPage", "mErr", "tfPage", "tfErr", "rv1", "rv2", "rNotes"].forEach(i => $(i).value = "");
-}
-
-function fillFields(d) {
-  $("mPage").value = d.memPage ?? "";
-  $("mErr").value = d.memErrors ?? "";
-  $("tfPage").value = d.tafsirPage ?? "";
-  $("tfErr").value = d.tafsirErrors ?? "";
-  $("rv1").value = d.review1Errors ?? "";
-  $("rv2").value = d.review2Errors ?? "";
-  $("rNotes").value = d.notes ?? "";
-}
-
-// تۆماری ئەو ڕۆژە بخوێنەرەوە، ئەگەر هەبوو پڕی بکەرەوە
-async function loadRecordForDate() {
-  clearFields();
-  $("recMsg").textContent = "";
-  if (!currentStudent || !$("rDate").value) return;
-  const q = query(
-    collection(db, "records"),
-    where("studentId", "==", currentStudent.id),
-    where("date", "==", $("rDate").value),
-    where("teacherId", "==", me)
-  );
-  try {
-    const snap = await getDocs(q);
-    if (!snap.empty) {
-      fillFields(snap.docs[0].data());
-      $("recMsg").textContent = "تۆماری ئەم ڕۆژە هەیە، دەتوانیت نوێی بکەیتەوە";
-    }
-  } catch (e) {
-    $("recMsg").textContent = "هەڵە لە خوێندنەوە: " + e.message;
-  }
-}
-
-async function openRecord(sid, name) {
-  currentStudent = { id: sid, name };
-  $("recName").textContent = name;
-  $("rDate").value = todayStr();
+/* ---------- شیتی تۆمار ---------- */
+function openRecord(s, week) {
+  curStudent = s;
+  curWeek = week;
+  $("recName").textContent = s.name;
+  fillWeek();
   $("recordCard").classList.remove("hide");
-  $("recordCard").scrollIntoView();
-  await loadRecordForDate();
+  $("recordBackdrop").classList.remove("hide");
 }
 
-$("rDate").onchange = loadRecordForDate;
+function fillWeek() {
+  const r = recCache.find(x => x.studentId === curStudent.id && x.weekStart === curWeek);
+  $("recSheetWeek").textContent = weekLabel(curWeek);
+  ["mPage", "mErr", "tfPage", "tfErr", "rv1", "rv2", "rNotes"].forEach(i => $(i).value = "");
+  if (r) {
+    $("mPage").value = r.memPage ?? "";
+    $("mErr").value = r.memErrors ?? "";
+    $("tfPage").value = r.tafsirPage ?? "";
+    $("tfErr").value = r.tafsirErrors ?? "";
+    $("rv1").value = r.review1Errors ?? "";
+    $("rv2").value = r.review2Errors ?? "";
+    $("rNotes").value = r.notes ?? "";
+  }
+  setAtt(r ? r.att : null);
+  $("recMsg").textContent = r ? "تۆماری ئەم هەفتەیە هەیە، دەتوانیت نوێی بکەیتەوە" : "";
+}
 
-$("closeRecBtn").onclick = () => $("recordCard").classList.add("hide");
+function setAtt(val) {
+  curAtt = val || null;
+  document.querySelectorAll(".attBtn").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset.val === curAtt))
+  );
+}
+document.querySelectorAll(".attBtn").forEach(b => {
+  b.onclick = () => setAtt(b.dataset.val === curAtt ? null : b.dataset.val);
+});
+
+$("swPrev").onclick = () => { curWeek = shiftWeek(curWeek, -1); fillWeek(); };
+$("swNext").onclick = () => { curWeek = shiftWeek(curWeek, 1); fillWeek(); };
+
+function closeSheet() {
+  $("recordCard").classList.add("hide");
+  $("recordBackdrop").classList.add("hide");
+}
+$("closeRecBtn").onclick = closeSheet;
+$("recordBackdrop").onclick = closeSheet;
 
 $("saveRecBtn").onclick = () => {
-  const date = $("rDate").value;
-  if (!currentStudent || !date) return;
-  // ناوی دۆکیومێنت = خوێندکار_ڕۆژ، بۆ ئەوەی هەمان ڕۆژ دوو جار تۆمار نەبێت
-  const id = currentStudent.id + "_" + date;
-  setDoc(doc(db, "records", id), {
-    studentId: currentStudent.id,
-    studentName: currentStudent.name,
-    teacherId: me,
-    date,
-    memPage: num("mPage"), memErrors: num("mErr"),
-    tafsirPage: num("tfPage"), tafsirErrors: num("tfErr"),
-    review1Errors: num("rv1"), review2Errors: num("rv2"),
-    notes: $("rNotes").value.trim(),
-    updatedAt: serverTimestamp()
-  }, { merge: true }).catch(e => alert("هەڵە: " + e.message));
+  if (!curStudent) return;
+  const id = curStudent.id + "_" + curWeek;
+  const data = {
+    studentId: curStudent.id,
+    studentName: curStudent.name,
+    teacherId: curStudent.teacherId,
+    weekStart: curWeek,
+    att: curAtt,
+    memPage: n("mPage"), memErrors: n("mErr"),
+    tafsirPage: n("tfPage"), tafsirErrors: n("tfErr"),
+    review1Errors: n("rv1"), review2Errors: n("rv2"),
+    notes: v("rNotes")
+  };
+  // بێ await، بۆ ئەوەی ئۆفلاین کار بکات
+  setDoc(doc(db, "records", id), data, { merge: true })
+    .catch(e => alert("هەڵە لە پاشەکەوتکردن: " + e.message));
+
+  const idx = recCache.findIndex(x => x.id === id);
+  if (idx >= 0) recCache[idx] = { id, ...data };
+  else recCache.push({ id, ...data });
+
   $("recMsg").textContent = "پاشەکەوتکرا";
-  setTimeout(() => $("recordCard").classList.add("hide"), 800);
+  renderAlerts();
+  renderRecList();
+  setTimeout(closeSheet, 700);
 };
 
+/* ---------- ڕاپۆرتی مانگانە ---------- */
+$("repBtn").onclick = () => {
+  const tid = isAdmin ? $("repTeacher").value : me;
+  const m = $("repMonth").value;
+  if (!m) { alert("مانگ هەڵبژێرە"); return; }
+  const tName = teachers.find(t => t.id === tid)?.name || "";
+  const rows = studentsCache.filter(s => s.teacherId === tid).sort(byName);
+
+  let html = `<div class="rHead">ناوی مامۆستا: <b>${esc(tName)}</b><br><span class="small">مانگ: ${esc(m)} (ئەو هەفتانەی لەم مانگە دەست پێدەکەن)</span></div>`;
+  if (!rows.length) html += '<p class="empty">هیچ خوێندکارێک نییە</p>';
+
+  rows.forEach(s => {
+    const recs = recCache
+      .filter(r => r.studentId === s.id && r.weekStart.startsWith(m))
+      .sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+    const days = recs.filter(r => r.att === "present").length;
+    const tot = k => recs.reduce((t, r) => t + (Number(r[k]) || 0), 0);
+
+    const weeks = recs.map(r =>
+      `<li>${esc(weekLabel(r.weekStart))}: ${r.att ? SYM[r.att] + " " + ST[r.att] : "—"} · لاپەڕە ${r.memPage ?? 0}، هەڵە ${r.memErrors ?? 0} · تەفسیر ${r.tafsirPage ?? 0}، هەڵە ${r.tafsirErrors ?? 0} · پێداچوونەوە ${(r.review1Errors ?? 0) + (r.review2Errors ?? 0)} هەڵە${r.notes ? " · " + esc(r.notes) : ""}</li>`
+    ).join("");
+
+    html += `
+      <div class="rCard">
+        <b>${esc(s.name)}</b>
+        <div class="small">وانەی خوێندووە: ${days} هەفتە · جوزء: ${esc(s.juz ?? 0)}</div>
+        <div class="small">لەبەرکردن: ${tot("memPage")} لاپەڕە، ${tot("memErrors")} هەڵە · تەفسیر: ${tot("tafsirPage")} لاپەڕە، ${tot("tafsirErrors")} هەڵە · پێداچوونەوە: ${tot("review1Errors") + tot("review2Errors")} هەڵە</div>
+        ${recs.length ? `<ul>${weeks}</ul>` : '<div class="small">هیچ تۆمارێک نییە</div>'}
+      </div>`;
+  });
+  $("repOut").innerHTML = html;
+};
+
+/* ---------- تابی خوێندکاران ---------- */
+function renderStudents() {
+  const tf = $("fTeacher").value;
+  const mn = $("fMinAge").value, mx = $("fMaxAge").value;
+  const sortBy = $("fSort").value;
+
+  let list = studentsCache.slice();
+  if (isAdmin && tf) list = list.filter(s => s.teacherId === tf);
+  list = list.filter(s => {
+    const a = age(s.dob);
+    if (mn !== "" && (a === null || a < Number(mn))) return false;
+    if (mx !== "" && (a === null || a > Number(mx))) return false;
+    return true;
+  });
+  list.sort((a, b) => {
+    if (sortBy === "age") return (age(a.dob) ?? 999) - (age(b.dob) ?? 999);
+    if (sortBy === "juz") return (Number(b.juz) || 0) - (Number(a.juz) || 0);
+    return byName(a, b);
+  });
+
+  const box = $("stuList");
+  box.innerHTML = "";
+  if (!list.length) {
+    box.innerHTML = '<p class="empty">هیچ خوێندکارێک نییە</p>';
+    return;
+  }
+  list.forEach(s => {
+    const row = document.createElement("div");
+    row.className = "student";
+    row.tabIndex = 0;
+    row.innerHTML = `<b>${esc(s.name)}</b><small>${age(s.dob) ?? "—"} ساڵ · جوزء ${esc(s.juz ?? 0)}${isAdmin ? " · " + esc(s.teacherName || "") : ""}</small>`;
+    row.onclick = () => editStudent(s.id);
+    row.onkeydown = e => { if (e.key === "Enter") editStudent(s.id); };
+    box.appendChild(row);
+  });
+}
+$("fApply").onclick = renderStudents;
+$("fSort").onchange = renderStudents;
+$("fTeacher").onchange = renderStudents;
+
+/* ---------- فۆرمی خوێندکار ---------- */
+const STUDENT_FIELDS = ["sfName","sfPhone","sfDob","sfJob","sfGuard","sfGuardPhone","sfJuz","sfLessonDay","sfQiraa","sfRiwayat","sfPlace","sfFinance"];
+
+function newStudent() {
+  editingId = null;
+  STUDENT_FIELDS.forEach(i => $(i).value = "");
+  $("sfStart").value = "البقرة بۆ الناس";
+  if (isAdmin) $("sfTeacher").value = teachers[0]?.id || "";
+  $("sfTitle").textContent = "زیادکردنی خوێندکار";
+  $("sfDelete").classList.add("hide");
+  $("sfMsg").textContent = "";
+}
+
+function editStudent(id) {
+  const s = studentsCache.find(x => x.id === id);
+  if (!s) return;
+  editingId = id;
+  $("sfName").value = s.name || "";
+  $("sfPhone").value = s.phone || "";
+  $("sfDob").value = s.dob || "";
+  $("sfJob").value = s.job || "";
+  $("sfGuard").value = s.guardianName || "";
+  $("sfGuardPhone").value = s.guardianPhone || "";
+  $("sfJuz").value = s.juz ?? "";
+  $("sfStart").value = s.startPoint || "البقرة بۆ الناس";
+  $("sfLessonDay").value = s.lessonDay || "";
+  $("sfQiraa").value = s.qiraaTeacher || "";
+  $("sfRiwayat").value = s.riwayat || "";
+  $("sfPlace").value = s.quranPlace || "";
+  $("sfFinance").value = s.familyFinance || "";
+  if (isAdmin) $("sfTeacher").value = s.teacherId;
+  $("sfTitle").textContent = "دەستکاریی خوێندکار";
+  $("sfDelete").classList.toggle("hide", !isAdmin);
+  $("sfMsg").textContent = "";
+  $("sfName").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+$("sfNew").onclick = newStudent;
+
+$("sfSave").onclick = () => {
+  const name = v("sfName");
+  if (!name) { $("sfMsg").textContent = "ناو پێویستە"; return; }
+  const tid = isAdmin ? $("sfTeacher").value : me;
+  const t = teachers.find(x => x.id === tid);
+  const data = {
+    name,
+    phone: v("sfPhone"),
+    dob: $("sfDob").value || "",
+    job: v("sfJob"),
+    guardianName: v("sfGuard"),
+    guardianPhone: v("sfGuardPhone"),
+    juz: n("sfJuz"),
+    startPoint: $("sfStart").value,
+    lessonDay: v("sfLessonDay"),
+    qiraaTeacher: v("sfQiraa"),
+    riwayat: v("sfRiwayat"),
+    quranPlace: v("sfPlace"),
+    familyFinance: v("sfFinance"),
+    teacherId: tid,
+    teacherName: t?.name || ""
+  };
+
+  // بێ await، بۆ ئەوەی ئۆفلاین کار بکات
+  let id = editingId;
+  if (id) {
+    setDoc(doc(db, "students", id), data, { merge: true })
+      .catch(e => alert("هەڵە: " + e.message));
+    const idx = studentsCache.findIndex(x => x.id === id);
+    if (idx >= 0) studentsCache[idx] = { id, ...data };
+  } else {
+    const ref = doc(collection(db, "students"));
+    id = ref.id;
+    setDoc(ref, { ...data, createdAt: new Date() })
+      .catch(e => alert("هەڵە: " + e.message));
+    studentsCache.push({ id, ...data });
+    editingId = id;
+  }
+
+  $("sfMsg").textContent = "پاشەکەوتکرا، لە خشتەی هەفتانەشدا زیاد بوو";
+  $("sfDelete").classList.toggle("hide", !isAdmin);
+  renderStudents();
+  renderRecList();
+};
+
+$("sfDelete").onclick = () => {
+  if (!isAdmin || !editingId) return;
+  if (!confirm("ئایا دڵنیایت لە سڕینەوەی ئەم خوێندکارە؟")) return;
+  const id = editingId;
+  deleteDoc(doc(db, "students", id)).catch(e => alert("هەڵە: " + e.message));
+  studentsCache = studentsCache.filter(x => x.id !== id);
+  recCache = recCache.filter(x => x.studentId !== id);
+  newStudent();
+  renderStudents();
+  renderRecList();
+  renderAlerts();
+};
+
+/* ---------- تابی مامۆستاکان (بەڕێوەبەر) ---------- */
 $("addTeacherBtn").onclick = async () => {
-  const name = $("tName").value.trim();
-  const email = $("tEmail").value.trim();
+  const name = v("tName");
+  const email = v("tEmail");
   const pass = $("tPass").value;
-  if (!name || !email || pass.length < 6) return adminMsg("ناو، ئیمەیڵ و وشەی نهێنی (٦ پیت) پێویستە");
+  if (!name || !email || pass.length < 6) {
+    $("adminMsg").textContent = "ناو، ئیمەیڵ و وشەی نهێنی (٦ پیت) پێویستە";
+    return;
+  }
   try {
     secApp = secApp || initializeApp(firebaseConfig, "secondary");
     const secAuth = getAuth(secApp);
     const cred = await createUserWithEmailAndPassword(secAuth, email, pass);
     await setDoc(doc(db, "teachers", cred.user.uid), { name, email, role: "teacher" });
     await signOut(secAuth);
-    adminMsg("مامۆستا زیادکرا");
+    $("adminMsg").textContent = "مامۆستا زیادکرا";
     $("tName").value = $("tEmail").value = $("tPass").value = "";
-    await loadTeachersSelect();
+    await loadTeachers();
   } catch (e) {
-    adminMsg("هەڵە: " + e.message);
+    $("adminMsg").textContent = "هەڵە: " + e.message;
   }
 };
 
-$("addStudentBtn").onclick = async () => {
-  const name = $("sName").value.trim();
-  const sel = $("sTeacher");
-  if (!name || !sel.value) return adminMsg("ناوی خوێندکار و مامۆستا پێویستە");
-  await addDoc(collection(db, "students"), {
-    name,
-    level: $("sLevel").value.trim(),
-    teacherId: sel.value,
-    teacherName: sel.options[sel.selectedIndex].text,
-    createdAt: serverTimestamp()
-  });
-  adminMsg("خوێندکار زیادکرا");
-  $("sName").value = $("sLevel").value = "";
-  await loadStudents();
-};
+/* ---------- ڕاپۆرتی سەرەوە: دەست پێکردنی ئاسان ---------- */
+newStudent();
 </script>
 </body>
 </html>
