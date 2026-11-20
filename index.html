@@ -1,190 +1,257 @@
 <!DOCTYPE html>
-<html lang="ku" dir="rtl">
+<html lang="ku" dir="rtl" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1619">
 <title>تۆمارکردنی لەبەرکردن</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* ---------- ڕەنگەکان ---------- */
 :root{
-  --ink:#17343A;
-  --paper:#EEF1EC;
-  --surface:#FBFCFA;
-  --muted:#66797C;
-  --line:#D3DBD6;
-  --accent:#A9782A;
+  --bg:#0B1619;
+  --surface:#14262A;
+  --surface2:#1B3135;
+  --line:#25403F;
+  --ink:#E8F2EF;
+  --muted:#8AA5A1;
+  --accent:#D9A441;
+  --accent2:#2FA37A;
+  --ok:#2FD39A;
+  --bad:#FF8A7A;
+  --gold:#E8B458;
+  --shadow:0 10px 30px rgba(0,0,0,.35);
 }
-*{box-sizing:border-box}
+[data-theme="light"]{
+  --bg:#EEF2EF;
+  --surface:#FFFFFF;
+  --surface2:#F3F7F5;
+  --line:#D5DFDB;
+  --ink:#17343A;
+  --muted:#66797C;
+  --accent:#A9782A;
+  --accent2:#1E7A4C;
+  --ok:#1E7A4C;
+  --bad:#C2452F;
+  --gold:#A9782A;
+  --shadow:0 8px 24px rgba(23,52,58,.08);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
 body{
   margin:0;
+  min-height:100vh;
   font-family:"Vazirmatn",Tahoma,sans-serif;
-  background:var(--paper);
   color:var(--ink);
+  background:
+    radial-gradient(900px 480px at 85% -8%, rgba(47,163,122,.16), transparent 60%),
+    radial-gradient(700px 420px at -8% 105%, rgba(217,164,65,.10), transparent 60%),
+    var(--bg);
   font-size:16px;
-  line-height:1.8;
+  line-height:1.75;
 }
 .hide{display:none!important}
-main{max-width:560px;margin:0 auto;padding:8px 16px 48px}
-
-/* سەرەتا */
-.welcome{text-align:center;padding:36px 8px 12px}
-.logo{display:block;width:100%;max-width:260px;height:auto;margin:0 auto 18px}
-.inst{font-size:22px;font-weight:700;margin:4px 0}
-.subInst{font-size:16px;margin:0}
-.rule{width:56px;height:2px;background:var(--accent);margin:20px auto}
-.dept{font-size:18px;font-weight:700;margin:0 0 4px}
-.sheetTitle{font-size:15px;color:var(--muted);margin:0 0 32px}
-.welcome button{max-width:320px;margin:0 auto;display:block}
-.login{max-width:380px;margin:36px auto 0}
-
-/* ---------- جوڵەکان (fade) ---------- */
-@keyframes fadeUp {
-  from { opacity:0; transform:translateY(14px); }
-  to   { opacity:1; transform:none; }
-}
-.welcome > *{
-  opacity:0;
-  animation:fadeUp .6s ease-out forwards;
-}
-.welcome > *:nth-child(1){ animation-delay:.1s }
-.welcome > *:nth-child(2){ animation-delay:.3s }
-.welcome > *:nth-child(3){ animation-delay:.5s }
-.welcome > *:nth-child(4){ animation-delay:.7s }
-.welcome > *:nth-child(5){ animation-delay:.85s }
-.welcome > *:nth-child(6){ animation-delay:1s }
-.welcome > *:nth-child(7){ animation-delay:1.15s }
-.welcome > *:nth-child(8){ animation-delay:1.3s }
-
-#login:not(.hide) .panel{
-  animation:fadeUp .5s ease-out both;
-}
-#app:not(.hide) .appHead{
-  animation:fadeUp .45s ease-out both;
-}
-#app:not(.hide) .tabs{
-  animation:fadeUp .45s ease-out .08s both;
-}
-.tabPane:not(.hide){
-  animation:fadeUp .45s ease-out both;
-}
-.student{
-  animation:fadeUp .4s ease-out both;
-}
-.student:nth-child(1){ animation-delay:.04s }
-.student:nth-child(2){ animation-delay:.08s }
-.student:nth-child(3){ animation-delay:.12s }
-.student:nth-child(4){ animation-delay:.16s }
-.student:nth-child(5){ animation-delay:.2s }
-.student:nth-child(6){ animation-delay:.24s }
-.student:nth-child(7){ animation-delay:.28s }
-.student:nth-child(8){ animation-delay:.32s }
-.rCard{
-  animation:fadeUp .4s ease-out both;
-}
-.alert{
-  animation:fadeUp .4s ease-out both;
-}
-@media (prefers-reduced-motion:reduce){
-  .welcome > *,
-  #login:not(.hide) .panel,
-  #app:not(.hide) .appHead,
-  #app:not(.hide) .tabs,
-  .tabPane:not(.hide),
-  .student,
-  .rCard,
-  .alert{
-    opacity:1;
-    animation:none;
-  }
-}
-
-/* ---------- ئەپ ---------- */
-.panel{
+.small{font-size:13px;color:var(--muted)}
+.card{
   background:var(--surface);border:1px solid var(--line);
-  border-radius:4px;padding:18px;margin:16px 0;
-}
-.panel h2{margin:0 0 10px;font-size:17px;font-weight:700}
-.panel h3{margin:18px 0 6px;font-size:15px;font-weight:700;color:var(--muted)}
-input,select,textarea{
-  width:100%;font:inherit;color:var(--ink);background:transparent;
-  border:0;border-bottom:1.5px solid var(--line);border-radius:0;
-  padding:10px 2px;margin:4px 0 12px;
-}
-input[type=file]{border:0;padding:8px 0}
-input:focus,select:focus,textarea:focus{outline:none;border-bottom-color:var(--ink)}
-label{display:block;font-size:14px;color:var(--muted);margin-top:4px}
-button{
-  font:inherit;font-weight:700;width:100%;padding:13px;border-radius:4px;
-  border:1px solid var(--ink);background:var(--ink);color:#fff;margin:6px 0;cursor:pointer;
-}
-button.ghost{background:transparent;color:var(--ink)}
-button.small{width:auto;padding:7px 12px;margin:0;font-size:14px}
-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-
-.appHead{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:14px 16px;border-bottom:1px solid var(--line);background:var(--surface);
-}
-.appHead h1{margin:0;font-size:17px;font-weight:700}
-.tabs{display:flex;gap:4px;max-width:560px;margin:0 auto;padding:10px 16px 0;overflow-x:auto}
-.tab{
-  flex:1;width:auto;background:transparent;color:var(--muted);
-  border:0;border-bottom:2px solid transparent;border-radius:0;
-  padding:10px 6px;margin:0;white-space:nowrap;
-}
-.tab.active{color:var(--ink);border-bottom-color:var(--accent)}
-
-.student{
-  display:flex;justify-content:space-between;align-items:baseline;gap:12px;
-  padding:14px 2px;border-bottom:1px solid var(--line);cursor:pointer;
-}
-.student:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.student b{font-size:16px;font-weight:700}
-.student small{color:var(--muted);font-size:13px;white-space:nowrap}
-.empty{color:var(--muted);padding:14px 2px}
-.status{font-size:14px;color:var(--muted);text-align:center;min-height:1.4em}
-.alert{
-  background:#F6EBDD;border:1px solid var(--accent);color:#6B4A14;
-  border-radius:4px;padding:10px 12px;margin:12px 0;font-size:15px;
+  border-radius:18px;box-shadow:var(--shadow);padding:18px;margin:14px 0;
 }
 
-.weekNav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
-.weekNav button{width:auto;padding:8px 12px;margin:0}
-.weekNav span{font-weight:700;font-size:15px}
-
-.att{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 6px}
-.attBtn{
-  background:var(--surface);color:var(--ink);border:1.5px solid var(--line);
-  font-size:22px;font-weight:400;padding:12px 0;margin:0;
-}
-.attBtn[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
-
-.filters{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;margin:12px 0}
-.filters button{grid-column:1/-1}
-
-.rCard{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:12px;margin:10px 0}
-.rCard ul{padding-inline-start:18px;margin:8px 0 0;font-size:14px;color:var(--muted)}
-.rHead{padding:4px 2px 8px}
-.small{font-size:14px;color:var(--muted)}
-
-.sheetBackdrop{position:fixed;inset:0;background:rgba(23,52,58,.25)}
-.sheet{
-  position:fixed;left:0;right:0;bottom:0;max-height:90vh;overflow-y:auto;
-  background:var(--surface);border-top:1px solid var(--line);
-  border-radius:12px 12px 0 0;padding:18px 16px 28px;
-  box-shadow:0 -8px 24px rgba(23,52,58,.12);
-  animation:rise .28s ease-out;
-}
-.sheet h2{margin:0 0 4px;font-size:18px;font-weight:700}
+/* ---------- جوڵەکان ---------- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes rise{from{transform:translateY(100%)}to{transform:none}}
-@media (prefers-reduced-motion:reduce){.sheet{animation:none}}
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+/* ---------- شاشەی سەرەتا ---------- */
+.welcomeWrap{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:32px 20px;
+}
+.logoWrap{
+  background:#fff;border-radius:28px;padding:16px 22px;
+  box-shadow:0 14px 40px rgba(0,0,0,.3);width:100%;max-width:300px;margin-bottom:26px;
+}
+.logoWrap img{width:100%;height:auto;display:block}
+.inst{font-size:24px;font-weight:700;margin:0}
+.subInst{font-size:15px;color:var(--muted);margin:4px 0 0}
+.rule{width:64px;height:3px;border-radius:3px;background:var(--accent);margin:22px auto}
+.dept{font-size:18px;font-weight:700;margin:0}
+.sheetTitle{font-size:14px;color:var(--muted);margin:6px 0 30px}
+.welcomeWrap .btn{max-width:320px}
+.welcomeWrap > *{opacity:0;animation:fadeUp .6s ease-out forwards}
+.welcomeWrap > *:nth-child(1){animation-delay:.1s}
+.welcomeWrap > *:nth-child(2){animation-delay:.3s}
+.welcomeWrap > *:nth-child(3){animation-delay:.45s}
+.welcomeWrap > *:nth-child(4){animation-delay:.6s}
+.welcomeWrap > *:nth-child(5){animation-delay:.75s}
+.welcomeWrap > *:nth-child(6){animation-delay:.9s}
+.welcomeWrap > *:nth-child(7){animation-delay:1.05s}
+
+/* ---------- چوونەژوورەوە ---------- */
+.loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.loginCard{width:100%;max-width:380px;margin:0}
+#login:not(.hide) .loginCard{animation:fadeUp .5s ease-out both}
+
+/* ---------- دوگمە و خانە ---------- */
+button{font-family:inherit}
+.btn{
+  font:inherit;font-weight:700;width:100%;padding:14px;border-radius:14px;border:0;
+  background:linear-gradient(135deg,var(--accent2),#1f7d5b);color:#fff;cursor:pointer;
+  margin:6px 0;font-size:16px;box-shadow:0 8px 20px rgba(47,163,122,.25);
+}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn:focus-visible,.iconBtn:focus-visible,.pillBtn:focus-visible,.navItem:focus-visible,.attBtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.iconBtn{
+  width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
+  background:var(--surface);color:var(--ink);font-size:18px;cursor:pointer;
+  display:grid;place-items:center;padding:0;margin:0;
+}
+.pillBtn{
+  border:1px solid var(--line);background:var(--surface2);color:var(--ink);
+  padding:8px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer;margin:0;width:auto;
+}
+input,select,textarea{
+  width:100%;font:inherit;font-size:15px;color:var(--ink);background:var(--surface2);
+  border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:6px 0 10px;
+}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent2)}
+input[type=file]{padding:10px}
+label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
+
+/* ---------- سەرتیتری ئەپ ---------- */
+.appHead{
+  position:sticky;top:0;z-index:5;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--line);
+  backdrop-filter:blur(10px);
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.miniLogo{width:44px;height:44px;border-radius:12px;background:#fff;padding:4px;object-fit:contain;flex:0 0 44px}
+.appHead h1{margin:0;font-size:16px;font-weight:700}
+.appHead .small{margin:0}
+.headBtns{display:flex;gap:8px}
+#app:not(.hide) .appHead{animation:fadeUp .45s ease-out both}
+
+.pageMain{max-width:600px;margin:0 auto;padding:6px 16px 110px}
+.tabPane:not(.hide){animation:fadeUp .4s ease-out both}
+.sectionHead{display:flex;justify-content:space-between;align-items:center;margin:12px 2px 4px}
+.sectionHead h2{margin:0;font-size:17px;font-weight:700}
+
+/* ---------- نەواری خوارەوە ---------- */
+.bottomNav{
+  position:fixed;bottom:0;left:0;right:0;margin:0 auto;z-index:6;
+  width:100%;max-width:600px;display:flex;justify-content:space-around;gap:4px;
+  background:var(--surface);border-top:1px solid var(--line);
+  padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -6px 20px rgba(0,0,0,.2);
+}
+.navItem{
+  flex:1;width:auto;background:none;border:0;color:var(--muted);font:inherit;font-size:12px;
+  padding:6px 4px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;margin:0;
+}
+.navItem span{font-size:20px;line-height:1.2}
+.navItem.active{color:var(--accent2);background:rgba(47,163,122,.12);font-weight:700}
+
+/* ---------- هەفتە و ئامار ---------- */
+.weekBar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
+#lwLabel{font-weight:700;font-size:15px}
+.statsRow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0 12px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}
+.stat b{display:block;font-size:20px;line-height:1.3}
+.stat small{font-size:11px;color:var(--muted)}
+.stat.present b{color:var(--ok)}
+.stat.absent b{color:var(--bad)}
+.stat.excused b{color:var(--gold)}
+
+/* ---------- ڕیزی خوێندکار ---------- */
+.student{
+  display:flex;align-items:center;gap:12px;background:var(--surface);
+  border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:8px 0;cursor:pointer;
+  transition:transform .15s ease,border-color .15s ease;
+  animation:fadeUp .4s ease-out both;
+}
+.student:nth-child(2){animation-delay:.04s}
+.student:nth-child(3){animation-delay:.08s}
+.student:nth-child(4){animation-delay:.12s}
+.student:nth-child(5){animation-delay:.16s}
+.student:nth-child(6){animation-delay:.2s}
+.student:nth-child(7){animation-delay:.24s}
+.student:nth-child(8){animation-delay:.28s}
+.student:active{transform:scale(.99)}
+.student:hover{border-color:var(--accent2)}
+.student:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.student .info{flex:1;min-width:0}
+.student .info b{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.student .info small{color:var(--muted);font-size:12.5px}
+.avatar{
+  width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;font-weight:700;font-size:17px;flex:0 0 44px;
+}
+.pill{font-size:12.5px;padding:5px 10px;border-radius:999px;white-space:nowrap;font-weight:700}
+.pill.present{background:rgba(47,163,122,.16);color:var(--ok)}
+.pill.absent{background:rgba(224,96,78,.16);color:var(--bad)}
+.pill.excused{background:rgba(217,164,65,.16);color:var(--gold)}
+.pill.none{background:var(--surface2);color:var(--muted)}
+.empty{color:var(--muted);padding:16px 2px;text-align:center}
+.status{font-size:14px;color:var(--muted);text-align:center;min-height:1.4em;margin:8px 0}
+
+.alert{
+  display:flex;gap:10px;align-items:center;
+  background:rgba(224,96,78,.12);border:1px solid rgba(224,96,78,.4);
+  border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;animation:fadeUp .4s ease-out both;
+}
+
+/* ---------- شیتی تۆمار ---------- */
+.sheetBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:9}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;margin:0 auto;z-index:10;
+  width:100%;max-width:600px;max-height:92vh;overflow-y:auto;
+  background:var(--surface);border-radius:24px 24px 0 0;
+  padding:10px 18px calc(26px + env(safe-area-inset-bottom,0px));
+  box-shadow:0 -12px 40px rgba(0,0,0,.35);animation:rise .3s ease-out;
+}
+.handle{width:44px;height:5px;border-radius:5px;background:var(--line);margin:4px auto 12px}
+.sheet h2{margin:0;font-size:18px;font-weight:700}
+.sheet .weekBar{margin:8px 0}
+.attGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0 10px}
+.attBtn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:14px 6px;border-radius:16px;border:1.5px solid var(--line);
+  background:var(--surface2);color:var(--ink);font:inherit;font-size:13px;cursor:pointer;margin:0;width:auto;
+}
+.attBtn .ico{font-size:24px;line-height:1.2}
+.attBtn[data-val="present"][aria-pressed="true"]{border-color:var(--ok);background:rgba(47,163,122,.16)}
+.attBtn[data-val="absent"][aria-pressed="true"]{border-color:var(--bad);background:rgba(224,96,78,.16)}
+.attBtn[data-val="excused"][aria-pressed="true"]{border-color:var(--gold);background:rgba(217,164,65,.16)}
 .sectionTitle{
-  font-size:14px;font-weight:700;margin:14px 0 2px;padding-bottom:4px;
-  border-bottom:2px solid var(--accent);display:inline-block;
+  font-size:13px;font-weight:700;color:var(--muted);margin:14px 2px 6px;
+  display:flex;align-items:center;gap:8px;
+}
+.sectionTitle::after{content:"";flex:1;height:1px;background:var(--line)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+
+/* ---------- ڕاپۆرت ---------- */
+.rCard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;margin:10px 0;box-shadow:var(--shadow);animation:fadeUp .4s ease-out both}
+.rTop{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rTop .info{flex:1;min-width:0}
+.rTop .info b{display:block}
+.rGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.rBox{background:var(--surface2);border-radius:12px;padding:8px 4px;text-align:center}
+.rBox b{display:block;font-size:17px;line-height:1.4}
+.rBox small{font-size:11px;color:var(--muted)}
+.rCard ul{padding-inline-start:18px;font-size:13px;color:var(--muted);margin:8px 0 0}
+.rHead{padding:4px 2px 8px}
+
+/* ---------- ڕووکاری ڕووناک: کەمێک ڕێکخستن ---------- */
+[data-theme="light"] .welcomeWrap .logoWrap{box-shadow:0 14px 40px rgba(23,52,58,.12)}
+
+/* ---------- جوڵە کەمکراوە ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .welcomeWrap > *,.student,.rCard,.alert,.tabPane,#login .loginCard,#app .appHead{opacity:1!important}
 }
 </style>
 </head>
@@ -192,26 +259,29 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 <!-- شاشەی سەرەتا -->
 <section id="welcome">
-  <main class="welcome">
-    <img src="logo.png" alt="لۆگۆی دەزگای نوری حیکمە" class="logo">
+  <main class="welcomeWrap">
+    <div class="logoWrap"><img src="logo.png" alt="لۆگۆی دەزگای نوری حیکمە"></div>
     <p class="inst">دەزگای نوری حیکمە</p>
     <p class="subInst">دەزگای نوری حیکمە بۆ پەروەردە و ڕۆشنبیری</p>
     <div class="rule"></div>
     <p class="dept">بەڕێوەبەرایەتیی لەبەرکردن</p>
     <p class="sheetTitle">خشتەی هەفتانە / ٢٠٢٦-٢٠٢٧</p>
-    <button id="showLoginBtn">چوونە ژوورەوە</button>
+    <button id="showLoginBtn" class="btn">چوونە ژوورەوە</button>
   </main>
 </section>
 
-<!-- فۆرمی چوونەژوورەوە -->
+<!-- چوونەژوورەوە -->
 <section id="login" class="hide">
-  <main class="login">
-    <div class="panel">
-      <h2>چوونەژوورەوە</h2>
-      <input id="email" type="email" placeholder="ئیمەیڵ">
+  <main class="loginWrap">
+    <div class="card loginCard">
+      <h2 style="margin:0 0 4px">چوونەژوورەوە</h2>
+      <p class="small" style="margin:0 0 12px">ژمارەی مۆبایل یان ئیمەیڵ</p>
+      <label for="loginId">ژمارەی مۆبایل</label>
+      <input id="loginId" type="text" inputmode="tel" placeholder="07XX XXX XXXX">
+      <label for="pass">وشەی نهێنی</label>
       <input id="pass" type="password" placeholder="وشەی نهێنی">
-      <button id="loginBtn">چوونە ژوورەوە</button>
-      <button id="backBtn" class="ghost">گەڕانەوە</button>
+      <button id="loginBtn" class="btn">چوونە ژوورەوە</button>
+      <button id="backBtn" class="btn ghost">گەڕانەوە</button>
     </div>
   </main>
 </section>
@@ -219,73 +289,80 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 <!-- ئەپ -->
 <div id="app" class="hide">
   <header class="appHead">
-    <h1>تۆمارکردنی لەبەرکردن</h1>
-    <button id="logoutBtn" class="ghost small">دەرچوون</button>
+    <div class="brand">
+      <img src="logo.png" alt="" class="miniLogo">
+      <div style="min-width:0">
+        <h1>تۆمارکردنی لەبەرکردن</h1>
+        <p id="userLine" class="small"></p>
+      </div>
+    </div>
+    <div class="headBtns">
+      <button id="themeBtn" class="iconBtn" title="ڕووکار">☀️</button>
+      <button id="logoutBtn" class="iconBtn" title="دەرچوون">⏻</button>
+    </div>
   </header>
 
-  <nav class="tabs">
-    <button class="tab active" data-tab="rec">تۆمار</button>
-    <button class="tab" data-tab="rep">ڕاپۆرت</button>
-    <button class="tab" data-tab="stu">خوێندکاران</button>
-    <button class="tab adminOnly hide" data-tab="tch">مامۆستاکان</button>
-  </nav>
-
-  <main>
+  <main class="pageMain">
     <div id="alerts"></div>
 
-    <!-- تابی تۆمار -->
+    <!-- تۆمار -->
     <section id="tab-rec" class="tabPane">
       <div id="recTeacherWrap" class="hide">
         <label for="recTeacher">مامۆستا</label>
         <select id="recTeacher"></select>
       </div>
-      <div class="weekNav">
-        <button id="lwPrev" class="ghost">پێشوو</button>
+      <div class="weekBar">
+        <button id="lwPrev" class="pillBtn">پێشوو</button>
         <span id="lwLabel"></span>
-        <button id="lwNext" class="ghost">دواتر</button>
+        <button id="lwNext" class="pillBtn">دواتر</button>
       </div>
+      <div id="weekStats" class="statsRow"></div>
       <div id="recList"></div>
     </section>
 
-    <!-- تابی ڕاپۆرت -->
+    <!-- ڕاپۆرت -->
     <section id="tab-rep" class="tabPane hide">
-      <div id="repTeacherWrap" class="hide">
-        <label for="repTeacher">مامۆستا</label>
-        <select id="repTeacher"></select>
+      <div class="card">
+        <div id="repTeacherWrap" class="hide">
+          <label for="repTeacher">مامۆستا</label>
+          <select id="repTeacher"></select>
+        </div>
+        <label for="repMonth">مانگ</label>
+        <input id="repMonth" type="month">
+        <button id="repBtn" class="btn">پیشاندانی ڕاپۆرت</button>
       </div>
-      <label for="repMonth">مانگ</label>
-      <input id="repMonth" type="month">
-      <button id="repBtn">پیشاندانی ڕاپۆرت</button>
       <div id="repOut"></div>
     </section>
 
-    <!-- تابی خوێندکاران -->
+    <!-- خوێندکاران -->
     <section id="tab-stu" class="tabPane hide">
 
-      <!-- هاوردەکردنی CSV (تەنها بەڕێوەبەر) -->
-      <section class="panel adminOnly hide">
-        <h2>هاوردەکردنی خوێندکاران (CSV)</h2>
+      <div class="card adminOnly hide">
+        <div class="sectionHead" style="margin-top:0"><h2>هاوردەکردنی خوێندکاران (CSV)</h2></div>
         <p class="small">فایلی CSVی گۆگڵ شیتەکەت هەڵبژێرە. ناوی مامۆستا لە خانەی «ناوی مامۆستای لەبەرکردن» دەبێت هاوشێوەی ناوی مامۆستاکە بێت.</p>
         <input id="csvFile" type="file" accept=".csv,text/csv">
-        <button id="importBtn">هاوردەکردن</button>
+        <button id="importBtn" class="btn">هاوردەکردن</button>
         <p id="importMsg" class="status"></p>
-      </section>
-
-      <div class="filters">
-        <select id="fTeacher" class="hide"></select>
-        <input id="fMinAge" type="number" min="0" placeholder="کەمترین تەمەن">
-        <input id="fMaxAge" type="number" min="0" placeholder="زۆرترین تەمەن">
-        <select id="fSort">
-          <option value="name">ڕیزکردن بە ناو</option>
-          <option value="age">ڕیزکردن بە تەمەن</option>
-          <option value="juz">ڕیزکردن بە بڕی لەبەرکردن</option>
-        </select>
-        <button id="fApply">پیشاندان</button>
       </div>
+
+      <div class="card" style="padding:14px">
+        <div class="grid2">
+          <select id="fTeacher" class="hide"></select>
+          <select id="fSort">
+            <option value="name">ڕیزکردن بە ناو</option>
+            <option value="age">ڕیزکردن بە تەمەن</option>
+            <option value="juz">ڕیزکردن بە بڕی لەبەرکردن</option>
+          </select>
+          <input id="fMinAge" type="number" min="0" placeholder="کەمترین تەمەن">
+          <input id="fMaxAge" type="number" min="0" placeholder="زۆرترین تەمەن">
+        </div>
+        <button id="fApply" class="btn ghost" style="margin-top:4px">پیشاندان</button>
+      </div>
+
       <div id="stuList"></div>
 
-      <section class="panel">
-        <h2 id="sfTitle">زیادکردنی خوێندکار</h2>
+      <div class="card">
+        <h2 id="sfTitle" style="margin:0 0 8px;font-size:17px">زیادکردنی خوێندکار</h2>
         <div id="sfTeacherWrap" class="hide">
           <label for="sfTeacher">مامۆستا</label>
           <select id="sfTeacher"></select>
@@ -309,58 +386,69 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
         <input id="sfRiwayat" placeholder="ڕیوایەتەکان کە مۆڵەتی تێدایە">
         <input id="sfPlace" placeholder="شوێنی خوێندنی قورئان">
         <input id="sfFinance" placeholder="باری دارایی خێزان">
-        <button id="sfSave">پاشەکەوتکردن</button>
-        <button id="sfNew" class="ghost">خوێندکاری نوێ</button>
-        <button id="sfDelete" class="ghost hide">سڕینەوە</button>
+        <button id="sfSave" class="btn">پاشەکەوتکردن</button>
+        <button id="sfNew" class="btn ghost">خوێندکاری نوێ</button>
+        <button id="sfDelete" class="btn ghost hide" style="color:var(--bad)">سڕینەوە</button>
         <p id="sfMsg" class="status"></p>
-      </section>
+      </div>
     </section>
 
-    <!-- تابی مامۆستاکان (تەنها بەڕێوەبەر) -->
+    <!-- مامۆستاکان (تەنها بەڕێوەبەر) -->
     <section id="tab-tch" class="tabPane hide">
-      <section class="panel">
-        <h2>زیادکردنی مامۆستا</h2>
+      <div class="card">
+        <h2 style="margin:0 0 8px;font-size:17px">زیادکردنی مامۆستا</h2>
         <input id="tName" placeholder="ناوی مامۆستا">
-        <input id="tEmail" type="email" placeholder="ئیمەیڵی مامۆستا">
+        <input id="tPhone" type="tel" inputmode="tel" placeholder="ژمارەی مۆبایلی مامۆستا">
         <input id="tPass" placeholder="وشەی نهێنی سەرەتایی (٦ پیت یان زیاتر)">
-        <button id="addTeacherBtn">زیادکردنی مامۆستا</button>
+        <button id="addTeacherBtn" class="btn">زیادکردنی مامۆستا</button>
         <p id="adminMsg" class="status"></p>
-      </section>
+      </div>
+      <div class="sectionHead"><h2>مامۆستاکان</h2></div>
+      <div id="tchList"></div>
     </section>
   </main>
+
+  <!-- نەواری خوارەوە -->
+  <nav class="bottomNav">
+    <button class="navItem active" data-tab="rec"><span>📝</span>تۆمار</button>
+    <button class="navItem" data-tab="rep"><span>📊</span>ڕاپۆرت</button>
+    <button class="navItem" data-tab="stu"><span>👥</span>خوێندکاران</button>
+    <button class="navItem adminOnly hide" data-tab="tch"><span>🧑‍🏫</span>مامۆستاکان</button>
+  </nav>
 </div>
 
 <!-- شیتی تۆماری هەفتانە -->
 <div id="recordBackdrop" class="sheetBackdrop hide"></div>
 <section id="recordCard" class="sheet hide">
+  <div class="handle"></div>
   <h2 id="recName"></h2>
-  <div class="weekNav">
-    <button id="swPrev" class="ghost">پێشوو</button>
+  <div class="weekBar">
+    <button id="swPrev" class="pillBtn">پێشوو</button>
     <span id="recSheetWeek"></span>
-    <button id="swNext" class="ghost">دواتر</button>
+    <button id="swNext" class="pillBtn">دواتر</button>
   </div>
 
-  <label>ئامادەبوون</label>
-  <div class="att">
-    <button class="attBtn" data-val="present" aria-pressed="false">✔️</button>
-    <button class="attBtn" data-val="absent" aria-pressed="false">✖️</button>
-    <button class="attBtn" data-val="excused" aria-pressed="false">م</button>
+  <div class="sectionTitle">ئامادەبوون</div>
+  <div class="attGrid">
+    <button class="attBtn" data-val="present" aria-pressed="false"><span class="ico">✔️</span>ئامادە</button>
+    <button class="attBtn" data-val="absent" aria-pressed="false"><span class="ico">✖️</span>غیاب</button>
+    <button class="attBtn" data-val="excused" aria-pressed="false"><span class="ico">م</span>نیجازە</button>
   </div>
 
   <div class="sectionTitle">لەبەرکردن</div>
-  <div class="grid">
+  <div class="grid2">
     <div><label for="mPage">لاپەڕە</label><input id="mPage" type="number" min="0" inputmode="numeric"></div>
     <div><label for="mErr">هەڵە</label><input id="mErr" type="number" min="0" inputmode="numeric"></div>
   </div>
 
   <div class="sectionTitle">تەفسیر</div>
-  <div class="grid">
+  <div class="grid2">
     <div><label for="tfPage">لاپەڕە</label><input id="tfPage" type="number" min="0" inputmode="numeric"></div>
     <div><label for="tfErr">هەڵە</label><input id="tfErr" type="number" min="0" inputmode="numeric"></div>
   </div>
 
   <div class="sectionTitle">پێداچوونەوە</div>
-  <div class="grid">
+  <div class="grid2">
     <div><label for="rv1">پرسیاری ١ (هەڵە)</label><input id="rv1" type="number" min="0" inputmode="numeric"></div>
     <div><label for="rv2">پرسیاری ٢ (هەڵە)</label><input id="rv2" type="number" min="0" inputmode="numeric"></div>
   </div>
@@ -368,8 +456,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <label for="rNotes">تێبینی</label>
   <textarea id="rNotes" rows="2"></textarea>
 
-  <button id="saveRecBtn">پاشەکەوتکردن</button>
-  <button id="closeRecBtn" class="ghost">داخستن</button>
+  <button id="saveRecBtn" class="btn">پاشەکەوتکردن</button>
+  <button id="closeRecBtn" class="btn ghost">داخستن</button>
   <p id="recMsg" class="status"></p>
 </section>
 
@@ -398,8 +486,37 @@ const n = id => Number($(id).value || 0);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 const byName = (a, b) => a.name.localeCompare(b.name, "ku");
 
+const PALETTE = ["#2FA37A", "#D9A441", "#4C8DFF", "#E0604E", "#9B7BE6", "#2BB3C0", "#E07BA5", "#7FB03A"];
+const hash = s => { let h = 0; for (const ch of String(s ?? "")) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
+const avatarHTML = name => {
+  const color = PALETTE[hash(name) % PALETTE.length];
+  const ch = (String(name ?? "").trim().charAt(0) || "?");
+  return `<span class="avatar" style="background:${color}">${esc(ch)}</span>`;
+};
+
 const SYM = { present: "✔️", absent: "✖️", excused: "م" };
-const ST  = { present: "ئامادە", absent: "غیاب", excused: "م" };
+const ST  = { present: "ئامادە", absent: "غیاب", excused: "نیجازە" };
+const pill = att => att
+  ? `<span class="pill ${att}">${SYM[att]} ${ST[att]}</span>`
+  : `<span class="pill none">تۆمار نەکراوە</span>`;
+
+const ascii = s => String(s ?? "")
+  .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+  .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
+
+// ژمارەی مۆبایل بکە بە ژمارەی ساف: بێ 0 و بێ 964
+const normPhone = s => {
+  let d = ascii(String(s ?? "")).replace(/\D/g, "");
+  if (d.startsWith("00")) d = d.slice(2);
+  if (d.startsWith("964")) d = d.slice(3);
+  if (d.startsWith("0")) d = d.slice(1);
+  return d;
+};
+// ئەگەر ئیمەیڵ بوو وەک خۆی، ئەگەر نا ژمارەیە و دەبێتە ئیمەیڵی ناوخۆیی
+const toAuthEmail = id => {
+  const s = String(id ?? "").trim();
+  return s.includes("@") ? s : normPhone(s) + "@qtteacher.com";
+};
 
 function toDate(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
 function fmt(d) {
@@ -425,6 +542,22 @@ function age(dob) {
   return a;
 }
 
+/* ---------- ڕووکار (تاریک / ڕووناک) ---------- */
+function applyTheme(t) {
+  document.documentElement.setAttribute("data-theme", t);
+  $("themeBtn").textContent = t === "dark" ? "☀️" : "🌙";
+  $("themeBtn").title = t === "dark" ? "ڕووناک" : "تاریک";
+  try { localStorage.setItem("qt-theme", t); } catch (e) {}
+}
+$("themeBtn").onclick = () => {
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+};
+{
+  let saved = "dark";
+  try { saved = localStorage.getItem("qt-theme") || "dark"; } catch (e) {}
+  applyTheme(saved);
+}
+
 /* ---------- دۆخی ئەپ ---------- */
 let me = null, myName = "", isAdmin = false, secApp = null;
 let teachers = [];
@@ -438,7 +571,7 @@ let editingId = null;
 $("showLoginBtn").onclick = () => {
   $("welcome").classList.add("hide");
   $("login").classList.remove("hide");
-  $("email").focus();
+  $("loginId").focus();
 };
 $("backBtn").onclick = () => {
   $("login").classList.add("hide");
@@ -446,9 +579,9 @@ $("backBtn").onclick = () => {
 };
 $("loginBtn").onclick = async () => {
   try {
-    await signInWithEmailAndPassword(auth, v("email"), $("pass").value);
+    await signInWithEmailAndPassword(auth, toAuthEmail(v("loginId")), $("pass").value);
   } catch (e) {
-    alert("ئیمەیڵ یان وشەی نهێنی هەڵەیە");
+    alert("ژمارە یان وشەی نهێنی هەڵەیە");
   }
 };
 $("logoutBtn").onclick = () => signOut(auth);
@@ -470,6 +603,7 @@ onAuthStateChanged(auth, async user => {
   me = user.uid;
   myName = snap.data().name || "";
   isAdmin = snap.data().role === "admin";
+  $("userLine").textContent = isAdmin ? "بەڕێوەبەر" : "مامۆستا: " + myName;
   document.querySelectorAll(".adminOnly").forEach(el => el.classList.toggle("hide", !isAdmin));
 
   $("welcome").classList.add("hide");
@@ -485,9 +619,13 @@ onAuthStateChanged(auth, async user => {
 async function loadTeachers() {
   if (isAdmin) {
     const snap = await getDocs(collection(db, "teachers"));
-    teachers = snap.docs.map(d => ({ id: d.id, name: d.data().name || "" }));
+    teachers = snap.docs.map(d => ({
+      id: d.id,
+      name: d.data().name || "",
+      phone: d.data().phone || d.data().email || ""
+    }));
   } else {
-    teachers = [{ id: me, name: myName }];
+    teachers = [{ id: me, name: myName, phone: "" }];
   }
   const opts = teachers.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
   $("recTeacher").innerHTML = opts;
@@ -499,6 +637,18 @@ async function loadTeachers() {
   $("repTeacherWrap").classList.toggle("hide", !isAdmin);
   $("sfTeacherWrap").classList.toggle("hide", !isAdmin);
   $("fTeacher").classList.toggle("hide", !isAdmin);
+
+  renderTeacherList();
+}
+
+function renderTeacherList() {
+  const box = $("tchList");
+  if (!box) return;
+  box.innerHTML = teachers.length
+    ? teachers.slice().sort(byName).map(t =>
+        `<div class="student">${avatarHTML(t.name)}<div class="info"><b>${esc(t.name)}</b><small>${esc(t.phone)}</small></div></div>`
+      ).join("")
+    : '<p class="empty">هیچ مامۆستایەک نییە</p>';
 }
 
 async function loadStudents() {
@@ -545,26 +695,40 @@ function warnings() {
 
 function renderAlerts() {
   $("alerts").innerHTML = warnings().map(x =>
-    `<div class="alert">ئاگادارکردنەوە: ${esc(x.name)}${isAdmin && x.teacher ? " (" + esc(x.teacher) + ")" : ""} — دوو وانە بەسەریەکەوە نەهاتووە</div>`
+    `<div class="alert"><span>⚠️</span><span>ئاگادارکردنەوە: <b>${esc(x.name)}</b>${isAdmin && x.teacher ? " (" + esc(x.teacher) + ")" : ""} — دوو وانە بەسەریەکەوە نەهاتووە</span></div>`
   ).join("");
 }
 
 /* ---------- تابەکان ---------- */
 function showTab(name) {
-  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+  document.querySelectorAll(".navItem").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
   document.querySelectorAll(".tabPane").forEach(p => p.classList.toggle("hide", p.id !== "tab-" + name));
   if (name === "rec") renderRecList();
   if (name === "stu") renderStudents();
+  if (name === "tch") renderTeacherList();
 }
-document.querySelectorAll(".tab").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+document.querySelectorAll(".navItem").forEach(b => b.onclick = () => showTab(b.dataset.tab));
 
-/* ---------- تابی تۆمار: لیستی خوێندکاران بۆ هەفتەی دیاریکراو ---------- */
+/* ---------- تابی تۆمار ---------- */
 function renderRecList() {
   $("lwLabel").textContent = weekLabel(listWeek);
   const tid = isAdmin ? $("recTeacher").value : me;
   const box = $("recList");
   box.innerHTML = "";
   const mine = studentsCache.filter(s => s.teacherId === tid).sort(byName);
+
+  // ئامار بۆ ئەم هەفتەیە
+  const c = { present: 0, absent: 0, excused: 0, none: 0 };
+  mine.forEach(s => {
+    const r = recCache.find(x => x.studentId === s.id && x.weekStart === listWeek);
+    if (r && r.att) c[r.att]++; else c.none++;
+  });
+  $("weekStats").innerHTML = `
+    <div class="stat present"><b>${c.present}</b><small>ئامادە</small></div>
+    <div class="stat absent"><b>${c.absent}</b><small>غیاب</small></div>
+    <div class="stat excused"><b>${c.excused}</b><small>نیجازە</small></div>
+    <div class="stat"><b>${c.none}</b><small>نەکراوە</small></div>`;
+
   if (!mine.length) {
     box.innerHTML = '<p class="empty">هیچ خوێندکارێک نییە</p>';
     return;
@@ -574,11 +738,9 @@ function renderRecList() {
     const row = document.createElement("div");
     row.className = "student";
     row.tabIndex = 0;
-    const b = document.createElement("b");
-    b.textContent = s.name;
-    const small = document.createElement("small");
-    small.textContent = r && r.att ? SYM[r.att] + " " + ST[r.att] : "تۆمار نەکراوە";
-    row.append(b, small);
+    row.innerHTML = avatarHTML(s.name) +
+      `<div class="info"><b>${esc(s.name)}</b><small>جوزء ${esc(s.juz ?? 0)}${s.startPoint ? " · " + esc(s.startPoint) : ""}</small></div>` +
+      pill(r?.att);
     row.onclick = () => openRecord(s, listWeek);
     row.onkeydown = e => { if (e.key === "Enter") openRecord(s, listWeek); };
     box.appendChild(row);
@@ -687,10 +849,20 @@ $("repBtn").onclick = () => {
 
     html += `
       <div class="rCard">
-        <b>${esc(s.name)}</b>
-        <div class="small">وانەی خوێندووە: ${days} هەفتە · جوزء: ${esc(s.juz ?? 0)}</div>
-        <div class="small">لەبەرکردن: ${tot("memPage")} لاپەڕە، ${tot("memErrors")} هەڵە · تەفسیر: ${tot("tafsirPage")} لاپەڕە، ${tot("tafsirErrors")} هەڵە · پێداچوونەوە: ${tot("review1Errors") + tot("review2Errors")} هەڵە</div>
-        ${recs.length ? `<ul>${weeks}</ul>` : '<div class="small">هیچ تۆمارێک نییە</div>'}
+        <div class="rTop">
+          ${avatarHTML(s.name)}
+          <div class="info"><b>${esc(s.name)}</b><small class="small">جوزء: ${esc(s.juz ?? 0)}</small></div>
+          <span class="pill present">${days} هەفتە</span>
+        </div>
+        <div class="rGrid">
+          <div class="rBox"><b>${tot("memPage")}</b><small>لاپەڕەی لەبەرکردن</small></div>
+          <div class="rBox"><b>${tot("memErrors")}</b><small>هەڵەی لەبەرکردن</small></div>
+          <div class="rBox"><b>${tot("tafsirPage")}</b><small>لاپەڕەی تەفسیر</small></div>
+          <div class="rBox"><b>${tot("tafsirErrors")}</b><small>هەڵەی تەفسیر</small></div>
+          <div class="rBox"><b>${tot("review1Errors") + tot("review2Errors")}</b><small>هەڵەی پێداچوونەوە</small></div>
+          <div class="rBox"><b>${recs.length}</b><small>هەفتەی تۆمارکراو</small></div>
+        </div>
+        ${recs.length ? `<ul>${weeks}</ul>` : '<div class="small" style="margin-top:6px">هیچ تۆمارێک نییە</div>'}
       </div>`;
   });
   $("repOut").innerHTML = html;
@@ -726,7 +898,8 @@ function renderStudents() {
     const row = document.createElement("div");
     row.className = "student";
     row.tabIndex = 0;
-    row.innerHTML = `<b>${esc(s.name)}</b><small>${age(s.dob) ?? "—"} ساڵ · جوزء ${esc(s.juz ?? 0)}${isAdmin ? " · " + esc(s.teacherName || "") : ""}</small>`;
+    row.innerHTML = avatarHTML(s.name) +
+      `<div class="info"><b>${esc(s.name)}</b><small>${age(s.dob) ?? "—"} ساڵ · جوزء ${esc(s.juz ?? 0)}${isAdmin ? " · " + esc(s.teacherName || "") : ""}</small></div>`;
     row.onclick = () => editStudent(s.id);
     row.onkeydown = e => { if (e.key === "Enter") editStudent(s.id); };
     box.appendChild(row);
@@ -834,7 +1007,6 @@ $("sfDelete").onclick = () => {
 };
 
 /* ---------- هاوردەکردنی CSV (بەڕێوەبەر) ---------- */
-// خوێندنەوەی CSV، لەگەڵ دەقی لە نێوان دووگیان و کۆما و نوێ بوونەوەی ڕیز
 function parseCsv(text) {
   const rows = [];
   let row = [], cell = "", q = false;
@@ -858,17 +1030,10 @@ function parseCsv(text) {
   return rows;
 }
 
-// یەکسانکردنی نووسین بۆ بەراوردکردنی ناوەکان
 const norm = s => String(s ?? "")
   .replace(/[يى]/g, "ی").replace(/ك/g, "ک").replace(/ة/g, "ە")
   .replace(/[أإآ]/g, "ا").replace(/\s+/g, " ").trim();
 
-// ژمارەی ئەرەبی و فارسی بکە بە ژمارەی ئاسایی
-const ascii = s => String(s ?? "")
-  .replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
-  .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d));
-
-// بەرواری لەدایکبوون بکە بە شێوەی yyyy-mm-dd
 function fixDob(s) {
   s = ascii(String(s ?? "").trim());
   let m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);
@@ -878,7 +1043,6 @@ function fixDob(s) {
   return "";
 }
 
-// شوێنی دەستپێکردن: ئەگەر یەکەمی ناس بوو، ئەوە الناس بۆ البقرة
 const fixStart = s => norm(s).startsWith("الناس") ? "الناس بۆ البقرة" : "البقرة بۆ الناس";
 
 $("importBtn").onclick = async () => {
@@ -889,7 +1053,6 @@ $("importBtn").onclick = async () => {
   const rows = parseCsv(await f.text()).filter(r => r.some(c => c.trim()));
   if (rows.length < 2) { $("importMsg").textContent = "فایلەکە بەتاڵە یان تەنها سەرڕیزەیە"; return; }
 
-  // دۆزینەوەی ستوونەکان بە پێی ناوی سەرڕیزەکان
   const H = rows[0].map(norm);
   const col = (must, not = []) =>
     H.findIndex(h => must.every(m => h.includes(m)) && !not.some(x => h.includes(x)));
@@ -964,26 +1127,36 @@ $("importBtn").onclick = async () => {
   renderAlerts();
 };
 
-/* ---------- تابی مامۆستاکان (بەڕێوەبەر) ---------- */
+/* ---------- زیادکردنی مامۆستا (بەڕێوەبەر) بە ژمارەی مۆبایل ---------- */
 $("addTeacherBtn").onclick = async () => {
   const name = v("tName");
-  const email = v("tEmail");
+  const phoneRaw = v("tPhone");
+  const phone = normPhone(phoneRaw);
   const pass = $("tPass").value;
-  if (!name || !email || pass.length < 6) {
-    $("adminMsg").textContent = "ناو، ئیمەیڵ و وشەی نهێنی (٦ پیت) پێویستە";
+
+  if (!name || phone.length < 7 || pass.length < 6) {
+    $("adminMsg").textContent = "ناو، ژمارەی مۆبایل (دروست) و وشەی نهێنی (٦ پیت) پێویستە";
     return;
   }
+  if (teachers.some(t => normPhone(t.phone) === phone)) {
+    $("adminMsg").textContent = "ئەم ژمارەیە پێشتر زیادکراوە";
+    return;
+  }
+
+  const email = phone + "@qtteacher.com";
   try {
     secApp = secApp || initializeApp(firebaseConfig, "secondary");
     const secAuth = getAuth(secApp);
     const cred = await createUserWithEmailAndPassword(secAuth, email, pass);
-    await setDoc(doc(db, "teachers", cred.user.uid), { name, email, role: "teacher" });
+    await setDoc(doc(db, "teachers", cred.user.uid), { name, phone: phoneRaw, email, role: "teacher" });
     await signOut(secAuth);
     $("adminMsg").textContent = "مامۆستا زیادکرا";
-    $("tName").value = $("tEmail").value = $("tPass").value = "";
+    $("tName").value = $("tPhone").value = $("tPass").value = "";
     await loadTeachers();
   } catch (e) {
-    $("adminMsg").textContent = "هەڵە: " + e.message;
+    $("adminMsg").textContent = e.code === "auth/email-already-in-use"
+      ? "ئەم ژمارەیە پێشتر زیادکراوە"
+      : "هەڵە: " + e.message;
   }
 };
 
