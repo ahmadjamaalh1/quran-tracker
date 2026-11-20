@@ -494,7 +494,10 @@ const $ = id => document.getElementById(id);
 const v = id => $(id).value.trim();
 const n = id => Number($(id).value || 0);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-const byName = (a, b) => String(a.name).localeCompare(String(b.name), "ku");
+
+// ڕیزکردن کە هەرگیز هەڵە نادات، حتا ئەگەر ناو یان بەروار بەتاڵ بێت
+const cmpStr = (a, b) => String(a ?? "").localeCompare(String(b ?? ""));
+const byName = (a, b) => cmpStr(a.name, b.name);
 
 const PALETTE = ["#2FA37A", "#D9A441", "#4C8DFF", "#E0604E", "#9B7BE6", "#2BB3C0", "#E07BA5", "#7FB03A"];
 const hash = s => { let h = 0; for (const ch of String(s ?? "")) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
@@ -528,6 +531,8 @@ const toAuthEmail = id => {
   return s.includes("@") ? s : normPhone(s) + "@qtteacher.com";
 };
 
+const isDay = s => /^\d{4}-\d{2}-\d{2}$/.test(String(s ?? ""));
+
 function toDate(s) { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); }
 function fmt(d) {
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
@@ -545,7 +550,7 @@ function weekLabel(s) {
   return `هەفتەی ${a.getDate()} - ${b.getDate()} / ${b.getMonth() + 1}`;
 }
 function age(dob) {
-  if (!dob) return null;
+  if (!isDay(dob)) return null;
   const b = toDate(dob), t = new Date();
   let a = t.getFullYear() - b.getFullYear();
   if (t < new Date(t.getFullYear(), b.getMonth(), b.getDate())) a--;
@@ -694,7 +699,14 @@ async function loadStudents() {
 async function loadRecords() {
   const c = isAdmin ? [] : [where("teacherId", "==", me)];
   const snap = await getDocs(query(collection(db, "records"), ...c));
-  recCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  recCache = snap.docs
+    .map(d => {
+      const r = { id: d.id, ...d.data() };
+      // تۆمارە کۆنەکان (بە ڕۆژ) دەگۆڕدرێن بۆ هەفتە، بۆ ئەوەی هەمان ئامار و ڕاپۆرت بۆیان کار بکات
+      if (!isDay(r.weekStart) && isDay(r.date)) r.weekStart = weekStartOf(toDate(r.date));
+      return r;
+    })
+    .filter(r => isDay(r.weekStart));
 }
 
 // داتا دووبارە دەخوێنێتەوە و هەموو لیستەکان نوێ دەکاتەوە
@@ -705,7 +717,11 @@ async function refreshData() {
   } catch (e) {
     showError("هەڵە لە بارکردنی داتا: " + e.message);
   }
-  renderAlerts();
+  try {
+    renderAlerts();
+  } catch (e) {
+    showError("هەڵە لە ئاگادارکردنەوەکان: " + e.message);
+  }
   renderRecList();
   renderStudents();
 }
@@ -716,12 +732,12 @@ function warnings() {
   recCache.forEach(r => { (by[r.studentId] ??= []).push(r); });
   const out = [];
   for (const sid in by) {
-    const last = by[sid].sort((a, b) => b.weekStart.localeCompare(a.weekStart)).slice(0, 2);
+    const last = by[sid].sort((a, b) => cmpStr(b.weekStart, a.weekStart)).slice(0, 2);
     if (last.length === 2 && last[0].att === "absent" && last[1].att === "absent") {
       const gap = toDate(last[0].weekStart) - toDate(last[1].weekStart);
       if (gap === 7 * 24 * 3600 * 1000) {
         const s = studentsCache.find(x => x.id === sid);
-        out.push({ name: s?.name || last[0].studentName, teacher: s?.teacherName || "" });
+        out.push({ name: s?.name || last[0].studentName || "", teacher: s?.teacherName || "" });
       }
     }
   }
@@ -883,8 +899,8 @@ $("repBtn").onclick = () => {
 
   rows.forEach(s => {
     const recs = recCache
-      .filter(r => r.studentId === s.id && r.weekStart.startsWith(m))
-      .sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+      .filter(r => r.studentId === s.id && String(r.weekStart).startsWith(m))
+      .sort((a, b) => cmpStr(a.weekStart, b.weekStart));
     const days = recs.filter(r => r.att === "present").length;
     const tot = k => recs.reduce((t, r) => t + (Number(r[k]) || 0), 0);
 
