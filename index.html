@@ -70,10 +70,13 @@ body{
   text-align:center;padding:32px 20px;
 }
 .logoWrap{
-  background:#fff;border-radius:28px;padding:16px 22px;
-  box-shadow:0 14px 40px rgba(0,0,0,.3);width:100%;max-width:300px;margin-bottom:26px;
+  background:transparent;border-radius:0;padding:0;box-shadow:none;
+  width:100%;max-width:300px;margin-bottom:26px;
 }
-.logoWrap img{width:100%;height:auto;display:block}
+.logoWrap img{
+  width:100%;height:auto;display:block;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.22));
+}
 .inst{font-size:24px;font-weight:700;margin:0}
 .subInst{font-size:15px;color:var(--muted);margin:4px 0 0}
 .rule{width:64px;height:3px;border-radius:3px;background:var(--accent);margin:22px auto}
@@ -128,7 +131,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
   backdrop-filter:blur(10px);
 }
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
-.miniLogo{width:44px;height:44px;border-radius:12px;background:#fff;padding:4px;object-fit:contain;flex:0 0 44px}
+.miniLogo{width:44px;height:44px;object-fit:contain;flex:0 0 44px}
 .appHead h1{margin:0;font-size:16px;font-weight:700}
 .appHead .small{margin:0}
 .headBtns{display:flex;gap:8px}
@@ -245,9 +248,6 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
 .rCard ul{padding-inline-start:18px;font-size:13px;color:var(--muted);margin:8px 0 0}
 .rHead{padding:4px 2px 8px}
 
-/* ---------- ڕووکاری ڕووناک: کەمێک ڕێکخستن ---------- */
-[data-theme="light"] .welcomeWrap .logoWrap{box-shadow:0 14px 40px rgba(23,52,58,.12)}
-
 /* ---------- جوڵە کەمکراوە ---------- */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -260,7 +260,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
 <!-- شاشەی سەرەتا -->
 <section id="welcome">
   <main class="welcomeWrap">
-    <div class="logoWrap"><img src="logo.png" alt="لۆگۆی دەزگای نوری حیکمە"></div>
+    <div class="logoWrap"><img src="logo.png" alt="لۆگۆی دەزگای نوری حیکمە" class="logo"></div>
     <p class="inst">دەزگای نوری حیکمە</p>
     <p class="subInst">دەزگای نوری حیکمە بۆ پەروەردە و ڕۆشنبیری</p>
     <div class="rule"></div>
@@ -290,7 +290,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
 <div id="app" class="hide">
   <header class="appHead">
     <div class="brand">
-      <img src="logo.png" alt="" class="miniLogo">
+      <img src="logo.png" alt="" class="miniLogo logo">
       <div style="min-width:0">
         <h1>تۆمارکردنی لەبەرکردن</h1>
         <p id="userLine" class="small"></p>
@@ -1159,6 +1159,55 @@ $("addTeacherBtn").onclick = async () => {
       : "هەڵە: " + e.message;
   }
 };
+
+/* ---------- لابردنی باکگراوندی سپی لە وێنەی لۆگۆ ---------- */
+// لە کەناراوە دەست پێدەکات و ئەو پیکسەلە سپیانە ڕوون دەکات کە بە کەناراوە گرێدراون
+function stripWhiteBg(img) {
+  const run = () => {
+    try {
+      const w = img.naturalWidth, h = img.naturalHeight;
+      if (!w || !h) return;
+      const c = document.createElement("canvas");
+      c.width = w; c.height = h;
+      const ctx = c.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const d = ctx.getImageData(0, 0, w, h);
+      const p = d.data;
+
+      const isBg = k => {
+        const i = k * 4;
+        return Math.min(p[i], p[i + 1], p[i + 2]) > 225;
+      };
+
+      const seen = new Uint8Array(w * h);
+      const stack = [];
+      const seed = k => {
+        if (!seen[k] && isBg(k)) { seen[k] = 1; stack.push(k); }
+      };
+
+      for (let x = 0; x < w; x++) { seed(x); seed((h - 1) * w + x); }
+      for (let y = 0; y < h; y++) { seed(y * w); seed(y * w + w - 1); }
+
+      while (stack.length) {
+        const k = stack.pop();
+        p[k * 4 + 3] = 0;
+        const x = k % w, y = (k - x) / w;
+        if (x > 0) seed(k - 1);
+        if (x < w - 1) seed(k + 1);
+        if (y > 0) seed(k - w);
+        if (y < h - 1) seed(k + w);
+      }
+
+      ctx.putImageData(d, 0, 0);
+      img.src = c.toDataURL("image/png");
+    } catch (e) {
+      // ئەگەر نەتوانرا، وێنەکە وەک خۆی دەمێنێتەوە
+    }
+  };
+  if (img.complete && img.naturalWidth) run();
+  else img.addEventListener("load", run, { once: true });
+}
+document.querySelectorAll("img.logo").forEach(stripWhiteBg);
 
 newStudent();
 </script>
