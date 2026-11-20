@@ -207,6 +207,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
   background:rgba(224,96,78,.12);border:1px solid rgba(224,96,78,.4);
   border-radius:14px;padding:12px 14px;margin:10px 0;font-size:14px;animation:fadeUp .4s ease-out both;
 }
+.alert.err{background:rgba(224,96,78,.18);border-color:var(--bad)}
 
 /* ---------- شیتی تۆمار ---------- */
 .sheetBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(3px);z-index:9}
@@ -298,13 +299,13 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
       </div>
     </div>
     <div class="headBtns">
-      <button id="themeBtn" class="iconBtn" title="ڕووکار">☀️</button>
-      <button id="reloadBtn" class="iconBtn" title="نوێکردنەوە" aria-label="نوێکردنەوە">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.3"/><path d="M21 4v5h-5"/></svg>
-      </button>
       <button id="logoutBtn" class="iconBtn" title="دەرچوون" aria-label="دەرچوون">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
       </button>
+      <button id="reloadBtn" class="iconBtn" title="نوێکردنەوە" aria-label="نوێکردنەوە">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.3"/><path d="M21 4v5h-5"/></svg>
+      </button>
+      <button id="themeBtn" class="iconBtn" title="ڕووکار">☀️</button>
     </div>
   </header>
 
@@ -493,7 +494,7 @@ const $ = id => document.getElementById(id);
 const v = id => $(id).value.trim();
 const n = id => Number($(id).value || 0);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
-const byName = (a, b) => a.name.localeCompare(b.name, "ku");
+const byName = (a, b) => String(a.name).localeCompare(String(b.name), "ku");
 
 const PALETTE = ["#2FA37A", "#D9A441", "#4C8DFF", "#E0604E", "#9B7BE6", "#2BB3C0", "#E07BA5", "#7FB03A"];
 const hash = s => { let h = 0; for (const ch of String(s ?? "")) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; };
@@ -551,6 +552,12 @@ function age(dob) {
   return a;
 }
 
+/* ---------- هەڵەی گشتی: لە سەرەوە پیشان بدرێت ---------- */
+function showError(msg) {
+  $("alerts").insertAdjacentHTML("afterbegin",
+    `<div class="alert err"><span>⚠️</span><span>${esc(msg)}</span></div>`);
+}
+
 /* ---------- ڕووکار (تاریک / ڕووناک) ---------- */
 function applyTheme(t) {
   document.documentElement.setAttribute("data-theme", t);
@@ -605,39 +612,50 @@ onAuthStateChanged(auth, async user => {
     closeSheet();
     return;
   }
-  const snap = await getDoc(doc(db, "teachers", user.uid));
-  if (!snap.exists()) {
-    alert("ئەم هەژمارە زیادکراو نییە");
-    signOut(auth);
-    return;
+  try {
+    const snap = await getDoc(doc(db, "teachers", user.uid));
+    if (!snap.exists()) {
+      alert("ئەم هەژمارە زیادکراو نییە");
+      signOut(auth);
+      return;
+    }
+    me = user.uid;
+    myName = snap.data().name || "";
+    isAdmin = snap.data().role === "admin";
+    $("userLine").textContent = isAdmin ? "بەڕێوەبەر" : "مامۆستا: " + myName;
+    document.querySelectorAll(".adminOnly").forEach(el => el.classList.toggle("hide", !isAdmin));
+
+    $("welcome").classList.add("hide");
+    $("login").classList.add("hide");
+    $("app").classList.remove("hide");
+
+    // یەکەم جار شاشە یەکسەر دەکێشرێت، پاشان داتا دێت و دووبارە دەکێشرێتەوە
+    await loadTeachers();
+    showTab("rec");
+    await refreshData();
+  } catch (e) {
+    showError("هەڵە لە کردنەوەی ئەپ: " + e.message);
   }
-  me = user.uid;
-  myName = snap.data().name || "";
-  isAdmin = snap.data().role === "admin";
-  $("userLine").textContent = isAdmin ? "بەڕێوەبەر" : "مامۆستا: " + myName;
-  document.querySelectorAll(".adminOnly").forEach(el => el.classList.toggle("hide", !isAdmin));
-
-  $("welcome").classList.add("hide");
-  $("login").classList.add("hide");
-  $("app").classList.remove("hide");
-
-  await loadTeachers();
-  await refreshData();
-  showTab("rec");
 });
 
 /* ---------- بارکردنی داتا ---------- */
 async function loadTeachers() {
-  if (isAdmin) {
-    const snap = await getDocs(collection(db, "teachers"));
-    teachers = snap.docs.map(d => ({
-      id: d.id,
-      name: d.data().name || "",
-      phone: d.data().phone || d.data().email || ""
-    }));
-  } else {
-    teachers = [{ id: me, name: myName, phone: "" }];
+  try {
+    if (isAdmin) {
+      const snap = await getDocs(collection(db, "teachers"));
+      teachers = snap.docs.map(d => ({
+        id: d.id,
+        name: d.data().name || "",
+        phone: d.data().phone || d.data().email || ""
+      }));
+    } else {
+      teachers = [{ id: me, name: myName, phone: "" }];
+    }
+  } catch (e) {
+    showError("هەڵە لە بارکردنی مامۆستاکان: " + e.message);
+    teachers = isAdmin ? [] : [{ id: me, name: myName, phone: "" }];
   }
+
   const opts = teachers.slice().sort(byName).map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
   $("recTeacher").innerHTML = opts;
   $("repTeacher").innerHTML = opts;
@@ -685,7 +703,7 @@ async function refreshData() {
     await loadStudents();
     await loadRecords();
   } catch (e) {
-    alert("هەڵە لە بارکردنی داتا: " + e.message);
+    showError("هەڵە لە بارکردنی داتا: " + e.message);
   }
   renderAlerts();
   renderRecList();
@@ -711,9 +729,12 @@ function warnings() {
 }
 
 function renderAlerts() {
-  $("alerts").innerHTML = warnings().map(x =>
+  const html = warnings().map(x =>
     `<div class="alert"><span>⚠️</span><span>ئاگادارکردنەوە: <b>${esc(x.name)}</b>${isAdmin && x.teacher ? " (" + esc(x.teacher) + ")" : ""} — دوو وانە بەسەریەکەوە نەهاتووە</span></div>`
   ).join("");
+  // هەڵەکان بمێننەوە، ئاگادارکردنەوەکان نوێ بکرێنەوە
+  const errs = [...$("alerts").querySelectorAll(".alert.err")].map(e => e.outerHTML).join("");
+  $("alerts").innerHTML = errs + html;
 }
 
 /* ---------- تابەکان ---------- */
@@ -735,7 +756,8 @@ document.querySelectorAll(".navItem").forEach(b => b.onclick = async () => {
 /* ---------- تابی تۆمار ---------- */
 function renderRecList() {
   $("lwLabel").textContent = weekLabel(listWeek);
-  const tid = isAdmin ? $("recTeacher").value : me;
+  // مامۆستا: هەمیشە خۆی، بەڕێوەبەر: ئەوەی هەڵیبژاردووە
+  const tid = isAdmin ? ($("recTeacher").value || me) : me;
   const box = $("recList");
   box.innerHTML = "";
   const mine = studentsCache.filter(s => s.teacherId === tid).sort(byName);
@@ -836,7 +858,7 @@ $("saveRecBtn").onclick = () => {
   };
   // بێ await، بۆ ئەوەی ئۆفلاین کار بکات
   setDoc(doc(db, "records", id), data, { merge: true })
-    .catch(e => alert("هەڵە لە پاشەکەوتکردن: " + e.message));
+    .catch(e => showError("هەڵە لە پاشەکەوتکردن: " + e.message));
 
   const idx = recCache.findIndex(x => x.id === id);
   if (idx >= 0) recCache[idx] = { id, ...data };
@@ -998,14 +1020,14 @@ $("sfSave").onclick = () => {
   let id = editingId;
   if (id) {
     setDoc(doc(db, "students", id), data, { merge: true })
-      .catch(e => alert("هەڵە: " + e.message));
+      .catch(e => showError("هەڵە: " + e.message));
     const idx = studentsCache.findIndex(x => x.id === id);
     if (idx >= 0) studentsCache[idx] = { id, ...data };
   } else {
     const ref = doc(collection(db, "students"));
     id = ref.id;
     setDoc(ref, { ...data, createdAt: new Date() })
-      .catch(e => alert("هەڵە: " + e.message));
+      .catch(e => showError("هەڵە: " + e.message));
     studentsCache.push({ id, ...data });
     editingId = id;
   }
@@ -1020,7 +1042,7 @@ $("sfDelete").onclick = () => {
   if (!isAdmin || !editingId) return;
   if (!confirm("ئایا دڵنیایت لە سڕینەوەی ئەم خوێندکارە؟")) return;
   const id = editingId;
-  deleteDoc(doc(db, "students", id)).catch(e => alert("هەڵە: " + e.message));
+  deleteDoc(doc(db, "students", id)).catch(e => showError("هەڵە: " + e.message));
   studentsCache = studentsCache.filter(x => x.id !== id);
   recCache = recCache.filter(x => x.studentId !== id);
   newStudent();
@@ -1300,8 +1322,6 @@ function stripWhiteBg(img) {
   else img.addEventListener("load", run, { once: true });
 }
 document.querySelectorAll("img.logo").forEach(stripWhiteBg);
-
-newStudent();
 </script>
 </body>
 </html>
