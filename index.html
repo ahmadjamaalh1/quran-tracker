@@ -495,7 +495,6 @@ const v = id => $(id).value.trim();
 const n = id => Number($(id).value || 0);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 
-// ڕیزکردن کە هەرگیز هەڵە نادات، حتا ئەگەر ناو یان بەروار بەتاڵ بێت
 const cmpStr = (a, b) => String(a ?? "").localeCompare(String(b ?? ""));
 const byName = (a, b) => cmpStr(a.name, b.name);
 
@@ -557,6 +556,14 @@ function age(dob) {
   return a;
 }
 
+// کاتی نوێکردنەوە بە میلی چرکە (Timestamp، ISO، یان هیچ)
+function msOf(x) {
+  if (!x) return 0;
+  if (typeof x.toMillis === "function") return x.toMillis();
+  const t = new Date(x).getTime();
+  return isNaN(t) ? 0 : t;
+}
+
 /* ---------- هەڵەی گشتی: لە سەرەوە پیشان بدرێت ---------- */
 function showError(msg) {
   $("alerts").insertAdjacentHTML("afterbegin",
@@ -583,11 +590,11 @@ $("themeBtn").onclick = () => {
 let me = null, myName = "", isAdmin = false, secApp = null;
 let teachers = [];
 let studentsCache = [];
-let recCache = [];
+let recCache = [];          // تەنها یەک تۆمار بۆ هەر خوێندکار و هەفتەیەک
 let listWeek = weekStartOf(new Date());
 let curStudent = null, curWeek = null, curAtt = null;
-let editingId = null;        // خوێندکار
-let editTeacherId = null;    // مامۆستا
+let editingId = null;       // خوێندکار
+let editTeacherId = null;   // مامۆستا
 
 /* ---------- چوونەژوورەوە ---------- */
 $("showLoginBtn").onclick = () => {
@@ -696,17 +703,38 @@ async function loadStudents() {
   studentsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
+/*
+  تۆمارەکان: هەر خوێندکارێک و هەر هەفتەیەک تەنها یەک تۆمار دەمێنێتەوە.
+  ئەگەر چەند تۆمار هەبوو (کۆنەکانی ڕۆژ بە ڕۆژ، یان دووبارە پڕکراوەکان)،
+  ئەوەی دوایین جار نوێکرابێتەوە (updatedAt) هەڵدەبژێردرێت.
+  ئەگەر کاتی نوێکردنەوە یەکسان بوو، ئەوەی ناوی کلیلەکەی ڕاستە (studentId_weekStart) هەڵدەبژێردرێت.
+*/
+function dedupeRecords(list) {
+  const best = new Map();
+  for (const r of list) {
+    const key = r.studentId + "|" + r.weekStart;
+    const canonical = r.id === r.studentId + "_" + r.weekStart;
+    const score = [msOf(r.updatedAt || r.createdAt), canonical ? 1 : 0];
+    const cur = best.get(key);
+    if (!cur || score[0] > cur.score[0] || (score[0] === cur.score[0] && score[1] > cur.score[1])) {
+      best.set(key, { rec: r, score });
+    }
+  }
+  return [...best.values()].map(x => x.rec);
+}
+
 async function loadRecords() {
   const c = isAdmin ? [] : [where("teacherId", "==", me)];
   const snap = await getDocs(query(collection(db, "records"), ...c));
-  recCache = snap.docs
+  const raw = snap.docs
     .map(d => {
       const r = { id: d.id, ...d.data() };
-      // تۆمارە کۆنەکان (بە ڕۆژ) دەگۆڕدرێن بۆ هەفتە، بۆ ئەوەی هەمان ئامار و ڕاپۆرت بۆیان کار بکات
+      // تۆمارە کۆنەکان (بە ڕۆژ) دەگۆڕدرێن بۆ هەفتە
       if (!isDay(r.weekStart) && isDay(r.date)) r.weekStart = weekStartOf(toDate(r.date));
       return r;
     })
-    .filter(r => isDay(r.weekStart));
+    .filter(r => r.studentId && isDay(r.weekStart));
+  recCache = dedupeRecords(raw);
 }
 
 // داتا دووبارە دەخوێنێتەوە و هەموو لیستەکان نوێ دەکاتەوە
@@ -860,6 +888,7 @@ $("recordBackdrop").onclick = closeSheet;
 
 $("saveRecBtn").onclick = () => {
   if (!curStudent) return;
+  // کلیلی ڕاست: خوێندکار_هەفتە، بۆ ئەوەی هەمان هەفتە هەرگیز دوو جار دروست نەبێت
   const id = curStudent.id + "_" + curWeek;
   const data = {
     studentId: curStudent.id,
@@ -870,15 +899,17 @@ $("saveRecBtn").onclick = () => {
     memPage: n("mPage"), memErrors: n("mErr"),
     tafsirPage: n("tfPage"), tafsirErrors: n("tfErr"),
     review1Errors: n("rv1"), review2Errors: n("rv2"),
-    notes: v("rNotes")
+    notes: v("rNotes"),
+    // کاتی دوایین نوێکردنەوە، بۆ ئەوەی دوایین گۆڕانکاری هەمیشە بژمێردرێت
+    updatedAt: new Date().toISOString()
   };
   // بێ await، بۆ ئەوەی ئۆفلاین کار بکات
   setDoc(doc(db, "records", id), data, { merge: true })
     .catch(e => showError("هەڵە لە پاشەکەوتکردن: " + e.message));
 
-  const idx = recCache.findIndex(x => x.id === id);
-  if (idx >= 0) recCache[idx] = { id, ...data };
-  else recCache.push({ id, ...data });
+  // تەنها یەک تۆمار بۆ ئەم خوێندکار و هەفتەیە بمێنێتەوە
+  recCache = recCache.filter(x => !(x.studentId === curStudent.id && x.weekStart === curWeek));
+  recCache.push({ id, ...data });
 
   $("recMsg").textContent = "پاشەکەوتکرا";
   renderAlerts();
