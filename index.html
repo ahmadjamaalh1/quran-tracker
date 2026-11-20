@@ -111,6 +111,7 @@ button{font-family:inherit}
   background:var(--surface);color:var(--ink);font-size:18px;cursor:pointer;
   display:grid;place-items:center;padding:0;margin:0;
 }
+.iconBtn svg{display:block}
 .pillBtn{
   border:1px solid var(--line);background:var(--surface2);color:var(--ink);
   padding:8px 14px;border-radius:999px;font:inherit;font-size:14px;cursor:pointer;margin:0;width:auto;
@@ -169,7 +170,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
 .stat.absent b{color:var(--bad)}
 .stat.excused b{color:var(--gold)}
 
-/* ---------- ڕیزی خوێندکار ---------- */
+/* ---------- ڕیزی خوێندکار / مامۆستا ---------- */
 .student{
   display:flex;align-items:center;gap:12px;background:var(--surface);
   border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:8px 0;cursor:pointer;
@@ -298,7 +299,12 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
     </div>
     <div class="headBtns">
       <button id="themeBtn" class="iconBtn" title="ڕووکار">☀️</button>
-      <button id="logoutBtn" class="iconBtn" title="دەرچوون">⏻</button>
+      <button id="reloadBtn" class="iconBtn" title="نوێکردنەوە" aria-label="نوێکردنەوە">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.6-6.3"/><path d="M21 4v5h-5"/></svg>
+      </button>
+      <button id="logoutBtn" class="iconBtn" title="دەرچوون" aria-label="دەرچوون">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+      </button>
     </div>
   </header>
 
@@ -367,14 +373,14 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
           <label for="sfTeacher">مامۆستا</label>
           <select id="sfTeacher"></select>
         </div>
-        <input id="sfName" placeholder="ناوی چوار">
+        <input id="sfName" placeholder="ناوی چواری خوێندکار">
         <input id="sfPhone" placeholder="ژمارەی مۆبایلی خوێندکار">
         <label for="sfDob">بەرواری لەدایکبوون</label>
         <input id="sfDob" type="date">
         <input id="sfJob" placeholder="پیشە">
         <input id="sfGuard" placeholder="سەرپەرشتیاری خێزان">
         <input id="sfGuardPhone" placeholder="ژمارەی مۆبایلی سەرپەرشتیار">
-        <label for="sfJuz">ڕێژەی جوزئی لەبەرکراو (ژمارە)</label>
+        <label for="sfJuz">ڕێژەی جزئی لەبەرکراو (ژمارە)</label>
         <input id="sfJuz" type="number" min="0">
         <label for="sfStart">شوێنی دەستپێکردن</label>
         <select id="sfStart">
@@ -382,8 +388,8 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
           <option value="الناس بۆ البقرة">الناس بۆ البقرة</option>
         </select>
         <input id="sfLessonDay" placeholder="ڕۆژی وانەخوێندن">
-        <input id="sfQiraa" placeholder="ناوی مامۆستای قیڕائە">
-        <input id="sfRiwayat" placeholder="ڕیوایەتەکان کە مۆڵەتی تێدایە">
+        <input id="sfQiraa" placeholder="ناوی سیانی مامۆستای قیڕائە">
+        <input id="sfRiwayat" placeholder="ئەو ڕیوایەتانەی کە مۆڵەتیان تێدایە">
         <input id="sfPlace" placeholder="شوێنی خوێندنی قورئان">
         <input id="sfFinance" placeholder="باری دارایی خێزان">
         <button id="sfSave" class="btn">پاشەکەوتکردن</button>
@@ -396,14 +402,17 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
     <!-- مامۆستاکان (تەنها بەڕێوەبەر) -->
     <section id="tab-tch" class="tabPane hide">
       <div class="card">
-        <h2 style="margin:0 0 8px;font-size:17px">زیادکردنی مامۆستا</h2>
+        <h2 id="tTitle" style="margin:0 0 8px;font-size:17px">زیادکردنی مامۆستا</h2>
         <input id="tName" placeholder="ناوی مامۆستا">
         <input id="tPhone" type="tel" inputmode="tel" placeholder="ژمارەی مۆبایلی مامۆستا">
         <input id="tPass" placeholder="وشەی نهێنی سەرەتایی (٦ پیت یان زیاتر)">
         <button id="addTeacherBtn" class="btn">زیادکردنی مامۆستا</button>
+        <button id="tCancel" class="btn ghost hide">هەڵوەشاندنەوە</button>
+        <button id="tDelete" class="btn ghost hide" style="color:var(--bad)">سڕینەوەی مامۆستا</button>
         <p id="adminMsg" class="status"></p>
       </div>
       <div class="sectionHead"><h2>مامۆستاکان</h2></div>
+      <p class="small" style="margin:0 2px">بۆ دەستکاریکردن کلیک لەسەر مامۆستایەک بکە.</p>
       <div id="tchList"></div>
     </section>
   </main>
@@ -432,7 +441,7 @@ label{display:block;font-size:13px;color:var(--muted);margin:6px 2px 0}
   <div class="attGrid">
     <button class="attBtn" data-val="present" aria-pressed="false"><span class="ico">✔️</span>ئامادە</button>
     <button class="attBtn" data-val="absent" aria-pressed="false"><span class="ico">✖️</span>غیاب</button>
-    <button class="attBtn" data-val="excused" aria-pressed="false"><span class="ico">م</span>نیجازە</button>
+    <button class="attBtn" data-val="excused" aria-pressed="false"><span class="ico">م</span>مۆڵەت</button>
   </div>
 
   <div class="sectionTitle">لەبەرکردن</div>
@@ -495,7 +504,7 @@ const avatarHTML = name => {
 };
 
 const SYM = { present: "✔️", absent: "✖️", excused: "م" };
-const ST  = { present: "ئامادە", absent: "غیاب", excused: "نیجازە" };
+const ST  = { present: "ئامادە", absent: "غیاب", excused: "مۆڵەت" };
 const pill = att => att
   ? `<span class="pill ${att}">${SYM[att]} ${ST[att]}</span>`
   : `<span class="pill none">تۆمار نەکراوە</span>`;
@@ -565,7 +574,8 @@ let studentsCache = [];
 let recCache = [];
 let listWeek = weekStartOf(new Date());
 let curStudent = null, curWeek = null, curAtt = null;
-let editingId = null;
+let editingId = null;        // خوێندکار
+let editTeacherId = null;    // مامۆستا
 
 /* ---------- چوونەژوورەوە ---------- */
 $("showLoginBtn").onclick = () => {
@@ -585,6 +595,7 @@ $("loginBtn").onclick = async () => {
   }
 };
 $("logoutBtn").onclick = () => signOut(auth);
+$("reloadBtn").onclick = () => refreshData();
 
 onAuthStateChanged(auth, async user => {
   if (!user) {
@@ -611,7 +622,7 @@ onAuthStateChanged(auth, async user => {
   $("app").classList.remove("hide");
 
   await loadTeachers();
-  await loadAll();
+  await refreshData();
   showTab("rec");
 });
 
@@ -627,7 +638,7 @@ async function loadTeachers() {
   } else {
     teachers = [{ id: me, name: myName, phone: "" }];
   }
-  const opts = teachers.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
+  const opts = teachers.slice().sort(byName).map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join("");
   $("recTeacher").innerHTML = opts;
   $("repTeacher").innerHTML = opts;
   $("sfTeacher").innerHTML = opts;
@@ -644,11 +655,16 @@ async function loadTeachers() {
 function renderTeacherList() {
   const box = $("tchList");
   if (!box) return;
+  if (!isAdmin) { box.innerHTML = ""; return; }
   box.innerHTML = teachers.length
     ? teachers.slice().sort(byName).map(t =>
-        `<div class="student">${avatarHTML(t.name)}<div class="info"><b>${esc(t.name)}</b><small>${esc(t.phone)}</small></div></div>`
+        `<div class="student" data-tid="${esc(t.id)}" tabindex="0">${avatarHTML(t.name)}<div class="info"><b>${esc(t.name)}</b><small>${esc(t.phone)}</small></div><span class="pill none">دەستکاری</span></div>`
       ).join("")
     : '<p class="empty">هیچ مامۆستایەک نییە</p>';
+  box.querySelectorAll(".student").forEach(el => {
+    el.onclick = () => startEditTeacher(el.dataset.tid);
+    el.onkeydown = e => { if (e.key === "Enter") startEditTeacher(el.dataset.tid); };
+  });
 }
 
 async function loadStudents() {
@@ -663,7 +679,8 @@ async function loadRecords() {
   recCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
-async function loadAll() {
+// داتا دووبارە دەخوێنێتەوە و هەموو لیستەکان نوێ دەکاتەوە
+async function refreshData() {
   try {
     await loadStudents();
     await loadRecords();
@@ -701,13 +718,19 @@ function renderAlerts() {
 
 /* ---------- تابەکان ---------- */
 function showTab(name) {
+  // مامۆستا هەرگیز ناتوانێت شاشەی مامۆستاکان ببینێت
+  if (name === "tch" && !isAdmin) name = "rec";
   document.querySelectorAll(".navItem").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
   document.querySelectorAll(".tabPane").forEach(p => p.classList.toggle("hide", p.id !== "tab-" + name));
   if (name === "rec") renderRecList();
   if (name === "stu") renderStudents();
-  if (name === "tch") renderTeacherList();
+  if (name === "tch") { resetTeacherForm(); renderTeacherList(); }
 }
-document.querySelectorAll(".navItem").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+// کاتێک تابێک دەکەیتەوە، داتاکان دووبارە دەخوێنرێنەوە
+document.querySelectorAll(".navItem").forEach(b => b.onclick = async () => {
+  showTab(b.dataset.tab);
+  if (b.dataset.tab === "rec" || b.dataset.tab === "stu") await refreshData();
+});
 
 /* ---------- تابی تۆمار ---------- */
 function renderRecList() {
@@ -726,7 +749,7 @@ function renderRecList() {
   $("weekStats").innerHTML = `
     <div class="stat present"><b>${c.present}</b><small>ئامادە</small></div>
     <div class="stat absent"><b>${c.absent}</b><small>غیاب</small></div>
-    <div class="stat excused"><b>${c.excused}</b><small>نیجازە</small></div>
+    <div class="stat excused"><b>${c.excused}</b><small>مۆڵەت</small></div>
     <div class="stat"><b>${c.none}</b><small>نەکراوە</small></div>`;
 
   if (!mine.length) {
@@ -1006,6 +1029,109 @@ $("sfDelete").onclick = () => {
   renderAlerts();
 };
 
+/* ---------- مامۆستاکان: زیادکردن، دەستکاری، سڕینەوە (تەنها بەڕێوەبەر) ---------- */
+function resetTeacherForm() {
+  editTeacherId = null;
+  $("tTitle").textContent = "زیادکردنی مامۆستا";
+  $("tName").value = "";
+  $("tPhone").value = "";
+  $("tPass").value = "";
+  $("tPhone").classList.remove("hide");
+  $("tPass").classList.remove("hide");
+  $("addTeacherBtn").textContent = "زیادکردنی مامۆستا";
+  $("tCancel").classList.add("hide");
+  $("tDelete").classList.add("hide");
+}
+
+function startEditTeacher(id) {
+  const t = teachers.find(x => x.id === id);
+  if (!t) return;
+  editTeacherId = id;
+  $("tTitle").textContent = "دەستکاریی مامۆستا";
+  $("tName").value = t.name;
+  $("tPhone").classList.add("hide");
+  $("tPass").classList.add("hide");
+  $("addTeacherBtn").textContent = "پاشەکەوتکردنی گۆڕانکاری";
+  $("tCancel").classList.remove("hide");
+  $("tDelete").classList.toggle("hide", id === me);
+  $("adminMsg").textContent = "ژمارەی مۆبایل و وشەی نهێنی ناگۆڕدرێن.";
+  $("tName").scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+async function saveTeacherEdit() {
+  const name = v("tName");
+  if (!name) { $("adminMsg").textContent = "ناو پێویستە"; return; }
+  try {
+    await setDoc(doc(db, "teachers", editTeacherId), { name }, { merge: true });
+    // هەموو خوێندکارەکانی ئەو مامۆستایە ناوی نوێ وەردەگرن
+    const jobs = studentsCache
+      .filter(s => s.teacherId === editTeacherId)
+      .map(s => setDoc(doc(db, "students", s.id), { teacherName: name }, { merge: true }));
+    await Promise.all(jobs);
+    studentsCache.forEach(s => { if (s.teacherId === editTeacherId) s.teacherName = name; });
+    await loadTeachers();
+    resetTeacherForm();
+    $("adminMsg").textContent = "گۆڕانکاریەکان پاشەکەوت کران";
+  } catch (e) {
+    $("adminMsg").textContent = "هەڵە: " + e.message;
+  }
+}
+
+async function deleteTeacher() {
+  if (!editTeacherId || editTeacherId === me) return;
+  const count = studentsCache.filter(s => s.teacherId === editTeacherId).length;
+  if (count) {
+    $("adminMsg").textContent = `ئەم مامۆستایە ${count} خوێندکاری هەیە. سەرەتا خوێندکارەکان بگۆڕە بۆ مامۆستایەکی تر یان بیانسڕەوە.`;
+    return;
+  }
+  if (!confirm("ئایا دڵنیایت لە سڕینەوەی ئەم مامۆستایە؟")) return;
+  try {
+    await deleteDoc(doc(db, "teachers", editTeacherId));
+    await loadTeachers();
+    resetTeacherForm();
+    $("adminMsg").textContent = "مامۆستا سڕایەوە";
+  } catch (e) {
+    $("adminMsg").textContent = "هەڵە: " + e.message;
+  }
+}
+
+$("tCancel").onclick = () => { resetTeacherForm(); $("adminMsg").textContent = ""; };
+$("tDelete").onclick = deleteTeacher;
+
+$("addTeacherBtn").onclick = async () => {
+  if (editTeacherId) return saveTeacherEdit();
+
+  const name = v("tName");
+  const phoneRaw = v("tPhone");
+  const phone = normPhone(phoneRaw);
+  const pass = $("tPass").value;
+
+  if (!name || phone.length < 7 || pass.length < 6) {
+    $("adminMsg").textContent = "ناو، ژمارەی مۆبایل (دروست) و وشەی نهێنی (٦ پیت) پێویستە";
+    return;
+  }
+  if (teachers.some(t => normPhone(t.phone) === phone)) {
+    $("adminMsg").textContent = "ئەم ژمارەیە پێشتر زیادکراوە";
+    return;
+  }
+
+  const email = phone + "@qtteacher.com";
+  try {
+    secApp = secApp || initializeApp(firebaseConfig, "secondary");
+    const secAuth = getAuth(secApp);
+    const cred = await createUserWithEmailAndPassword(secAuth, email, pass);
+    await setDoc(doc(db, "teachers", cred.user.uid), { name, phone: phoneRaw, email, role: "teacher" });
+    await signOut(secAuth);
+    await loadTeachers();
+    resetTeacherForm();
+    $("adminMsg").textContent = "مامۆستا زیادکرا";
+  } catch (e) {
+    $("adminMsg").textContent = e.code === "auth/email-already-in-use"
+      ? "ئەم ژمارەیە پێشتر زیادکراوە"
+      : "هەڵە: " + e.message;
+  }
+};
+
 /* ---------- هاوردەکردنی CSV (بەڕێوەبەر) ---------- */
 function parseCsv(text) {
   const rows = [];
@@ -1127,41 +1253,7 @@ $("importBtn").onclick = async () => {
   renderAlerts();
 };
 
-/* ---------- زیادکردنی مامۆستا (بەڕێوەبەر) بە ژمارەی مۆبایل ---------- */
-$("addTeacherBtn").onclick = async () => {
-  const name = v("tName");
-  const phoneRaw = v("tPhone");
-  const phone = normPhone(phoneRaw);
-  const pass = $("tPass").value;
-
-  if (!name || phone.length < 7 || pass.length < 6) {
-    $("adminMsg").textContent = "ناو، ژمارەی مۆبایل (دروست) و وشەی نهێنی (٦ پیت) پێویستە";
-    return;
-  }
-  if (teachers.some(t => normPhone(t.phone) === phone)) {
-    $("adminMsg").textContent = "ئەم ژمارەیە پێشتر زیادکراوە";
-    return;
-  }
-
-  const email = phone + "@qtteacher.com";
-  try {
-    secApp = secApp || initializeApp(firebaseConfig, "secondary");
-    const secAuth = getAuth(secApp);
-    const cred = await createUserWithEmailAndPassword(secAuth, email, pass);
-    await setDoc(doc(db, "teachers", cred.user.uid), { name, phone: phoneRaw, email, role: "teacher" });
-    await signOut(secAuth);
-    $("adminMsg").textContent = "مامۆستا زیادکرا";
-    $("tName").value = $("tPhone").value = $("tPass").value = "";
-    await loadTeachers();
-  } catch (e) {
-    $("adminMsg").textContent = e.code === "auth/email-already-in-use"
-      ? "ئەم ژمارەیە پێشتر زیادکراوە"
-      : "هەڵە: " + e.message;
-  }
-};
-
 /* ---------- لابردنی باکگراوندی سپی لە وێنەی لۆگۆ ---------- */
-// لە کەناراوە دەست پێدەکات و ئەو پیکسەلە سپیانە ڕوون دەکات کە بە کەناراوە گرێدراون
 function stripWhiteBg(img) {
   const run = () => {
     try {
